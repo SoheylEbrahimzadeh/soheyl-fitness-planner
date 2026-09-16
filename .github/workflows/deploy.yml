@@ -65,6 +65,18 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Configure Clerk secret key on Cloudflare Pages
+        run: |
+          if [ -z "$CLERK_SECRET_KEY" ]; then
+            echo "::warning::CLERK_SECRET_KEY repository secret is not set -- skipping. Clerk-authenticated routes will 500 until it's added in GitHub Settings > Secrets and variables > Actions."
+          else
+            echo "$CLERK_SECRET_KEY" | yarn workspace @macromaxxing/workers wrangler pages secret put CLERK_SECRET_KEY --project-name="${{ github.event.repository.name }}"
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
       - name: Deploy to Cloudflare Pages
         run: yarn workspace @macromaxxing/workers wrangler pages deploy --project-name=${{ github.event.repository.name }}
         env:

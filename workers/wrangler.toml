@@ -5,9 +5,11 @@ pages_build_output_dir = "dist/client"
 
 [vars]
 REST_ALERTS_ENABLED = "false"
+CLERK_PUBLISHABLE_KEY = "pk_test_YmV0dGVyLWJlYXItNDUzOS5jbGVyay5hY2NvdW50cy5kZXYk"
 
 [env.preview.vars]
 REST_ALERTS_ENABLED = "false"
+CLERK_PUBLISHABLE_KEY = "pk_test_YmV0dGVyLWJlYXItNDUzOS5jbGVyay5hY2NvdW50cy5kZXYk"
 
 [[d1_databases]]
 binding = "DB"
