@@ -129,7 +129,8 @@ export const de: Dictionary = {
 					{ label: 'Eiweiß', value: '52 g', pct: '40 %' }
 				],
 				ingredientsLabel: 'Zutaten',
-				ingredientsText: 'Hähnchenschenkel, Jasminreis, Brokkoliröschen, Sesamöl, Sojasauce, frischer Ingwer, Knoblauch, Chiliflocken.'
+				ingredientsText:
+					'Hähnchenschenkel, Jasminreis, Brokkoliröschen, Sesamöl, Sojasauce, frischer Ingwer, Knoblauch, Chiliflocken.'
 			},
 			trainingPanel: {
 				title: 'Trainingsdaten',
@@ -420,7 +421,8 @@ export const de: Dictionary = {
 			marker: '§ Ende des Datenblatts',
 			titleLine1: 'Starte das Log heute.',
 			titleLine2: 'Sei bis Sonntag besser.',
-			subtitle: 'Kostenloses Konto. Keine Kreditkarte. Deine Daten bleiben deine. Installiere sie auf deinem Handy, wenn du willst.',
+			subtitle:
+				'Kostenloses Konto. Keine Kreditkarte. Deine Daten bleiben deine. Installiere sie auf deinem Handy, wenn du willst.',
 			ctaCreate: 'Konto erstellen',
 			ctaBackToTop: 'Nach oben',
 			tagline: 'Gemacht für alle, die messen'

@@ -134,7 +134,8 @@ export const fr: Dictionary = {
 					{ label: 'Protéines', value: '52 g', pct: '40 %' }
 				],
 				ingredientsLabel: 'Ingrédients',
-				ingredientsText: 'Cuisse de poulet, riz jasmin, fleurettes de brocoli, huile de sésame, soja, gingembre frais, ail, flocons de piment.'
+				ingredientsText:
+					'Cuisse de poulet, riz jasmin, fleurettes de brocoli, huile de sésame, soja, gingembre frais, ail, flocons de piment.'
 			},
 			trainingPanel: {
 				title: "Valeurs d'entraînement",
@@ -160,7 +161,7 @@ export const fr: Dictionary = {
 			{ value: 'FTS5', label: 'Moteur de recherche' },
 			{ value: 'MCP', label: 'Serveur exposé' },
 			{ value: 'Programmes', label: 'Tableau de bord cyclique' },
-			{ value: 'PWA', label: "Priorité hors ligne" },
+			{ value: 'PWA', label: 'Priorité hors ligne' },
 			{ value: 'D1', label: 'SQLite en périphérie' },
 			{ value: 'R2', label: "Stockage d'images" },
 			{ value: '3', label: "Fournisseurs d'IA" }
@@ -183,7 +184,7 @@ export const fr: Dictionary = {
 				{
 					eyebrow: 'Plan',
 					title: 'La semaine, allouée',
-					body: "Créez un plan. Ajoutez des recettes à son inventaire. Répartissez les portions du lundi au dimanche. Une sur-allocation vous alerte — elle ne vous bloque jamais."
+					body: 'Créez un plan. Ajoutez des recettes à son inventaire. Répartissez les portions du lundi au dimanche. Une sur-allocation vous alerte — elle ne vous bloque jamais.'
 				}
 			],
 			perRawLabel: 'Pour 100 g crus',
@@ -221,7 +222,7 @@ export const fr: Dictionary = {
 				},
 				{
 					title: 'Des standards de force',
-					body: "Développé couché → développé incliné haltères. Squat → leg extension. Des ratios composé-isolation sélectionnés signalent un exercice accessoire disproportionné par rapport au mouvement principal."
+					body: 'Développé couché → développé incliné haltères. Squat → leg extension. Des ratios composé-isolation sélectionnés signalent un exercice accessoire disproportionné par rapport au mouvement principal.'
 				}
 			]
 		},
@@ -233,12 +234,12 @@ export const fr: Dictionary = {
 				{
 					eyebrow: 'Programmes',
 					title: 'Des cycles nommés, actifs par défaut',
-					body: "Regroupez des modèles dans un programme — Push / Pull / Legs, haut du corps / bas du corps, peu importe. Marquez-en un comme actif et le tableau de bord vous dit ce qui suit, par jour du cycle, pas au hasard."
+					body: 'Regroupez des modèles dans un programme — Push / Pull / Legs, haut du corps / bas du corps, peu importe. Marquez-en un comme actif et le tableau de bord vous dit ce qui suit, par jour du cycle, pas au hasard.'
 				},
 				{
 					eyebrow: 'Technique',
-					title: "Le coach vit dans le mouvement",
-					body: "Chaque exercice porte son propre guide technique — description, repères à cibler, pièges à éviter. Sélectionné pour les mouvements du système, modifiable par vos soins. À un geste de la série que vous allez exécuter."
+					title: 'Le coach vit dans le mouvement',
+					body: 'Chaque exercice porte son propre guide technique — description, repères à cibler, pièges à éviter. Sélectionné pour les mouvements du système, modifiable par vos soins. À un geste de la série que vous allez exécuter.'
 				}
 			],
 			activeLabel: 'Actif',
@@ -280,7 +281,7 @@ export const fr: Dictionary = {
 				{
 					eyebrow: 'Par exercice',
 					title: "L'e1RM dans le temps",
-					body: 'Ouvrez un mouvement pour voir la série de tête, le e1RM et le volume par séance. Chaque point est une répétition qui l\'a mérité.'
+					body: "Ouvrez un mouvement pour voir la série de tête, le e1RM et le volume par séance. Chaque point est une répétition qui l'a mérité."
 				}
 			]
 		},
@@ -290,7 +291,7 @@ export const fr: Dictionary = {
 			kicker: "L'application calcule l'échauffement, le repos et la dégressive. Vous notez la série — elle fait le calcul, tient l'horloge, et pré-remplit la prochaine fois d'après ce que vous avez réellement fait.",
 			steps: [
 				{
-					title: "Ouvrez la séance.",
+					title: 'Ouvrez la séance.',
 					body: "L'application reprend votre dernière séance, génère la montée en charge, et pré-remplit les objectifs depuis le modèle. Séries, répétitions, poids et type de série — déjà prêts à confirmer."
 				},
 				{
@@ -299,7 +300,7 @@ export const fr: Dictionary = {
 				},
 				{
 					title: 'Le repos démarre automatiquement.',
-					body: 'Compte à rebours = répétitions × 4 × objectif × palier de fatigue. Le squat récupère plus longtemps que le curl. Les mouvements composés plus que les isolations. Les supersets basculent sur un minuteur de transition court entre les exercices d\'un round, puis un repos complet une fois le round terminé — sans bascule manuelle.'
+					body: "Compte à rebours = répétitions × 4 × objectif × palier de fatigue. Le squat récupère plus longtemps que le curl. Les mouvements composés plus que les isolations. Les supersets basculent sur un minuteur de transition court entre les exercices d'un round, puis un repos complet une fois le round terminé — sans bascule manuelle."
 				},
 				{
 					title: 'Ajustez en direct.',
@@ -361,7 +362,7 @@ export const fr: Dictionary = {
 				},
 				{
 					title: 'Planifier',
-					body: 'Créez un plan de repas. Ajoutez des recettes à l\'inventaire avec un nombre de portions. Répartissez les portions du lundi au dimanche. Cuisinez une fois, mangez toute la semaine.',
+					body: "Créez un plan de repas. Ajoutez des recettes à l'inventaire avec un nombre de portions. Répartissez les portions du lundi au dimanche. Cuisinez une fois, mangez toute la semaine.",
 					meta: "Basé sur l'inventaire"
 				},
 				{
@@ -383,7 +384,7 @@ export const fr: Dictionary = {
 			qLabel: 'Q',
 			items: [
 				{
-					q: "Est-ce gratuit ?",
+					q: 'Est-ce gratuit ?',
 					a: "L'application est gratuite. Pour les recherches nutritionnelles absentes de la base USDA locale, apportez votre propre clé d'IA — Gemini, OpenAI ou Anthropic. Le scan de code-barres et la base alimentaire locale fonctionnent sans aucune clé."
 				},
 				{
@@ -396,10 +397,10 @@ export const fr: Dictionary = {
 				},
 				{
 					q: 'Puis-je suivre un programme (PPL, haut/bas du corps, etc.) ?',
-					a: 'Oui. Regroupez vos modèles d\'entraînement dans un programme nommé et marquez-en un comme actif. Le tableau de bord le parcourt jour après jour — terminez Push A, « à suivre » devient Pull A. Réorganisez à tout moment ; le cycle s\'adapte.'
+					a: "Oui. Regroupez vos modèles d'entraînement dans un programme nommé et marquez-en un comme actif. Le tableau de bord le parcourt jour après jour — terminez Push A, « à suivre » devient Pull A. Réorganisez à tout moment ; le cycle s'adapte."
 				},
 				{
-					q: "Ai-je des graphiques de progression et une détection des records ?",
+					q: 'Ai-je des graphiques de progression et une détection des records ?',
 					a: "Oui. La page d'analyses affiche les records récents (1RM estimé dépassant le meilleur précédent de plus de 0,5 kg), les mouvements stagnants, le volume hebdomadaire par muscle et une carte de chaleur du calendrier. Chaque exercice a son propre graphique e1RM / volume / série de tête."
 				},
 				{
@@ -408,7 +409,7 @@ export const fr: Dictionary = {
 				},
 				{
 					q: 'Vendez-vous mes données ou entraînez-vous des modèles dessus ?',
-					a: 'Non. Vos recettes, séances et clés d\'IA vous appartiennent. Les clés sont chiffrées au repos avec AES-GCM et déchiffrées uniquement lors de vos requêtes.'
+					a: "Non. Vos recettes, séances et clés d'IA vous appartiennent. Les clés sont chiffrées au repos avec AES-GCM et déchiffrées uniquement lors de vos requêtes."
 				},
 				{
 					q: "Puis-je connecter d'autres outils ?",
@@ -423,9 +424,10 @@ export const fr: Dictionary = {
 		},
 		footerCta: {
 			marker: '§ Fin de la fiche',
-			titleLine1: 'Commencez le journal aujourd\'hui.',
+			titleLine1: "Commencez le journal aujourd'hui.",
 			titleLine2: 'Soyez meilleur dimanche.',
-			subtitle: 'Compte gratuit. Sans carte bancaire. Vos données restent les vôtres. Installez-la sur votre téléphone si vous voulez.',
+			subtitle:
+				'Compte gratuit. Sans carte bancaire. Vos données restent les vôtres. Installez-la sur votre téléphone si vous voulez.',
 			ctaCreate: 'Créer un compte',
 			ctaBackToTop: 'Retour en haut',
 			tagline: 'Conçu pour les athlètes qui mesurent'

@@ -55,9 +55,9 @@ export const SignalSection: FC = () => {
 								<span className="font-mono text-ink text-sm tabular-nums">119.4 kg</span>
 							</div>
 							<HistoryChart data={HISTORY_DATA} metric="e1rm" />
-					</div>
-				}
-			/>
+						</div>
+					}
+				/>
 			</div>
 		</SectionShell>
 	)

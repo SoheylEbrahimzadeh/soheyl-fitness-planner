@@ -73,6 +73,18 @@ function vapidConfig(env: Cloudflare.Env) {
 	return { publicKey: env.VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY }
 }
 
+// Cloudflare Queue is optional — this deployment currently runs without the
+// REST_NOTIFICATION_QUEUE binding (see workers/wrangler.toml — Queues are
+// disabled for the free-tier-only phase, mirroring the same Partial-cast
+// pattern used for R2 in workers/functions/lib/images.ts). Read through a
+// narrow Partial cast — not a cast of the whole Env — so this compiles
+// whether or not the generated Cloudflare.Env type currently declares the
+// binding; if it's configured again later this starts returning the real
+// queue with no further code change needed.
+function getRestNotificationQueue(env: Cloudflare.Env): Queue | undefined {
+	return (env as Partial<{ REST_NOTIFICATION_QUEUE: Queue }>).REST_NOTIFICATION_QUEUE
+}
+
 const restAlertsProcedure = protectedProcedure.use(({ ctx, next }) => {
 	if (ctx.env.REST_ALERTS_ENABLED === 'false') {
 		throw new TRPCError({ code: 'PRECONDITION_FAILED', message: 'Rest alerts are disabled in previews' })
@@ -188,7 +200,7 @@ export const restNotificationsRouter = router({
 		if (!subscription || subscription.userId !== ctx.user.id) {
 			throw new TRPCError({ code: 'NOT_FOUND', message: 'Subscription not found' })
 		}
-		const queue = ctx.env.REST_NOTIFICATION_QUEUE
+		const queue = getRestNotificationQueue(ctx.env)
 		if (!queue) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Rest alerts are not configured' })
 
 		let existing = found

@@ -1,4 +1,13 @@
-import { createContext, type FC, type ReactNode, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react'
+import {
+	createContext,
+	type FC,
+	type ReactNode,
+	useCallback,
+	useContext,
+	useLayoutEffect,
+	useMemo,
+	useState
+} from 'react'
 import { de } from './locales/de'
 import { en } from './locales/en'
 import { fa } from './locales/fa'

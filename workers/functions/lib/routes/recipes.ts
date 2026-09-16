@@ -10,6 +10,7 @@ import { TRPCError } from '@trpc/server'
 import { and, eq, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import type { Database } from '../db'
+import { getImagesBucket } from '../images'
 import { escapeLikePattern, paginationFields, searchField } from '../list-inputs'
 import { protectedProcedure, publicProcedure, router } from '../trpc'
 
@@ -226,9 +227,18 @@ export const recipesRouter = router({
 			})
 			if (!recipe) throw new TRPCError({ code: 'NOT_FOUND' })
 
-			// Clean up R2 image if it was an upload — only keys this recipe owns
+			// Clean up R2 image if it was an upload — only keys this recipe owns.
+			// Best-effort: recipe deletion is a core, unrelated feature and must not
+			// be blocked just because R2 is currently unconfigured (see
+			// workers/functions/lib/images.ts) — skip the cleanup rather than fail
+			// the whole delete.
 			if (recipe.image?.startsWith(recipe.id)) {
-				await ctx.env.IMAGES.delete(`recipes/${recipe.image}`)
+				const bucket = getImagesBucket(ctx.env)
+				if (bucket) {
+					await bucket.delete(`recipes/${recipe.image}`)
+				} else {
+					console.warn('recipe_image_cleanup_skipped_no_bucket', { recipeId: recipe.id })
+				}
 			}
 
 			await ctx.db.delete(recipes).where(eq(recipes.id, input.id))

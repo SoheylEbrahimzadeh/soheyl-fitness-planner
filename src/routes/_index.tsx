@@ -238,26 +238,24 @@ const DashboardContent: FC = () => {
 			{summaryQuery.error && <TRPCError error={summaryQuery.error} />}
 
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-	<div>
-		<div className="mb-2 text-ink-faint text-xs font-medium tracking-wide">
-			{t('dashboard.kicker')}
-		</div>
+				<div>
+					<div className="mb-2 font-medium text-ink-faint text-xs tracking-wide">{t('dashboard.kicker')}</div>
 
-		<h1 className="font-display font-semibold text-3xl text-ink sm:text-4xl">
-			{t('dashboard.greeting', { name: 'Soheyl' })}
-		</h1>
+					<h1 className="font-display font-semibold text-3xl text-ink sm:text-4xl">
+						{t('dashboard.greeting', { name: 'Soheyl' })}
+					</h1>
 
-		<p className="mt-2 text-ink-muted text-sm sm:text-base">
-			{t('dashboard.focusLine')}{' '}
-			<span className="font-medium text-ink">{t('dashboard.focusGoal')}</span>
-		</p>
-	</div>
+					<p className="mt-2 text-ink-muted text-sm sm:text-base">
+						{t('dashboard.focusLine')}{' '}
+						<span className="font-medium text-ink">{t('dashboard.focusGoal')}</span>
+					</p>
+				</div>
 
-	<div className="flex items-center gap-2 self-start rounded-full border border-edge bg-surface-1 px-4 py-2 shadow-black/10 shadow-sm sm:self-auto">
-		<span className="size-2 rounded-full bg-success" />
-		<span className="text-ink-muted text-xs">{t('dashboard.activeProgramBadge')}</span>
-	</div>
-</div>
+				<div className="flex items-center gap-2 self-start rounded-full border border-edge bg-surface-1 px-4 py-2 shadow-black/10 shadow-sm sm:self-auto">
+					<span className="size-2 rounded-full bg-success" />
+					<span className="text-ink-muted text-xs">{t('dashboard.activeProgramBadge')}</span>
+				</div>
+			</div>
 
 			<BodyGoalSection />
 
@@ -388,7 +386,9 @@ const MacroHeroSection: FC<{ dayTotals: AbsoluteMacros; targets: MacroTargets | 
 					<div className="text-ink-faint text-xs">{t('dashboard.macro.proteinToday')}</div>
 					<div dir="ltr" className="text-right font-display font-semibold text-4xl text-ink">
 						{dayTotals.protein.toFixed(0)}
-						<span className="text-ink-faint text-lg">g{targets && ` / ${targets.protein.toFixed(0)}g`}</span>
+						<span className="text-ink-faint text-lg">
+							g{targets && ` / ${targets.protein.toFixed(0)}g`}
+						</span>
 					</div>
 					{targets ? (
 						<div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
@@ -451,14 +451,16 @@ const TodayMealsSection: FC<{ buckets: { label: string; meals: MealSlotMacros[] 
 								>
 									<Link to={`/plans/${meal.planId}`} className="flex items-center gap-3">
 										<div className="min-w-0 flex-1">
-											<div className="truncate font-medium text-ink text-sm">{meal.recipeName}</div>
+											<div className="truncate font-medium text-ink text-sm">
+												{meal.recipeName}
+											</div>
 											<div
 												dir="ltr"
 												className="text-right font-mono text-ink-muted text-xs tabular-nums"
 											>
 												{meal.portions > 1 && `${meal.portions}× · `}
-												{meal.macros.kcal.toFixed(0)} kcal · P {meal.macros.protein.toFixed(0)}g · C{' '}
-												{meal.macros.carbs.toFixed(0)}g · F {meal.macros.fat.toFixed(0)}g
+												{meal.macros.kcal.toFixed(0)} kcal · P {meal.macros.protein.toFixed(0)}g
+												· C {meal.macros.carbs.toFixed(0)}g · F {meal.macros.fat.toFixed(0)}g
 											</div>
 										</div>
 										<ChevronLeft className="size-4 shrink-0 text-ink-faint" />

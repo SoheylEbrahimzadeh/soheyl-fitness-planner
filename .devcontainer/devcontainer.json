@@ -1,30 +1,24 @@
 {
-  "name": "Soheyl Fitness",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-  "forwardPorts": [
-    1337,
-    8788
-  ],
-  "portsAttributes": {
-    "1337": {
-      "label": "Web app (Vite dev server)",
-      "onAutoForward": "notify"
-    },
-    "8788": {
-      "label": "API (wrangler pages dev + local D1)",
-      "onAutoForward": "silent"
-    }
-  },
-  "postCreateCommand": "corepack enable && yarn install --immutable && (cp -n workers/.dev.vars.template workers/.dev.vars || true) && (cp -n .env.local.example .env.local || true) && yarn generate && yarn db:migrate",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "biomejs.biome",
-        "bradlc.vscode-tailwindcss"
-      ]
-    }
-  },
-  "remoteEnv": {
-    "NODE_OPTIONS": "--max-old-space-size=4096"
-  }
+	"name": "Soheyl Fitness",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+	"forwardPorts": [1337, 8788],
+	"portsAttributes": {
+		"1337": {
+			"label": "Web app (Vite dev server)",
+			"onAutoForward": "notify"
+		},
+		"8788": {
+			"label": "API (wrangler pages dev + local D1)",
+			"onAutoForward": "silent"
+		}
+	},
+	"postCreateCommand": "corepack enable && yarn install --immutable && (cp -n workers/.dev.vars.template workers/.dev.vars || true) && (cp -n .env.local.example .env.local || true) && yarn generate && yarn db:migrate",
+	"customizations": {
+		"vscode": {
+			"extensions": ["biomejs.biome", "bradlc.vscode-tailwindcss"]
+		}
+	},
+	"remoteEnv": {
+		"NODE_OPTIONS": "--max-old-space-size=4096"
+	}
 }

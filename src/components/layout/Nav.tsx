@@ -6,7 +6,14 @@ import { Button } from '~/components/ui/Button'
 import { OfflineIndicator } from '~/components/ui/OfflineIndicator'
 import { RestTimer } from '~/features/workouts/components/RestTimer'
 import { useWorkoutSessionStore } from '~/features/workouts/store'
-import { cn, FAVORITABLE_ROUTES, type FavoritableRoute, useBottomNavFavorites, useDirection, useTranslation } from '~/lib'
+import {
+	cn,
+	FAVORITABLE_ROUTES,
+	type FavoritableRoute,
+	useBottomNavFavorites,
+	useDirection,
+	useTranslation
+} from '~/lib'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileMenuDrawer } from './MobileMenuDrawer'
 

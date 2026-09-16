@@ -129,7 +129,11 @@ export interface Dictionary {
 			specEst: string
 			specSerial: string
 			specLive: string
-			footnotes: readonly [{ value: string; label: string }, { value: string; label: string }, { value: string; label: string }]
+			footnotes: readonly [
+				{ value: string; label: string },
+				{ value: string; label: string },
+				{ value: string; label: string }
+			]
 			nutritionPanel: {
 				title: string
 				code: string
@@ -215,7 +219,10 @@ export interface Dictionary {
 			marker: string
 			title: string
 			kicker: string
-			cards: readonly [{ eyebrow: string; title: string; body: string }, { eyebrow: string; title: string; body: string }]
+			cards: readonly [
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string }
+			]
 			activeLabel: string
 			loopsLabel: string
 			nextLabel: string

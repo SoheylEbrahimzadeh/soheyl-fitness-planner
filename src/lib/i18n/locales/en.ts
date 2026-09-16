@@ -69,7 +69,7 @@ export const en: Dictionary = {
 			durationMin: '~{{min}} min',
 			start: 'Start',
 			skip: 'Skip',
-			skipTitle: "Skip this one — the next one takes its place",
+			skipTitle: 'Skip this one — the next one takes its place',
 			undoSkip: 'Undo',
 			noTemplates: "You haven't built a workout template yet.",
 			createOne: 'Create one'
@@ -128,7 +128,8 @@ export const en: Dictionary = {
 					{ label: 'Protein', value: '52 g', pct: '40%' }
 				],
 				ingredientsLabel: 'Ingredients',
-				ingredientsText: 'Chicken thigh, jasmine rice, broccoli florets, sesame oil, soy, fresh ginger, garlic, chili flake.'
+				ingredientsText:
+					'Chicken thigh, jasmine rice, broccoli florets, sesame oil, soy, fresh ginger, garlic, chili flake.'
 			},
 			trainingPanel: {
 				title: 'Training Facts',
@@ -191,8 +192,7 @@ export const en: Dictionary = {
 		rack: {
 			marker: '§ 02 / Rack',
 			title: 'Training logged rep for rep.',
-			kicker:
-				'Templates pre-fill planned sets. Tap to confirm. Body map heats up with volume. Rest timer knows how hard you just worked.',
+			kicker: 'Templates pre-fill planned sets. Tap to confirm. Body map heats up with volume. Rest timer knows how hard you just worked.',
 			coverageMapLabel: 'Coverage map',
 			lastDaysVolumeLabel: 'Last 14 days · volume',
 			lowLabel: 'Low',
@@ -282,8 +282,7 @@ export const en: Dictionary = {
 		auto: {
 			marker: '§ 05 / Auto',
 			title: 'Turn off your brain at the gym.',
-			kicker:
-				'The app calculates warmup, rest, and backoff. You log the set — it does the math, holds the clock, and pre-fills next time from what you actually did.',
+			kicker: 'The app calculates warmup, rest, and backoff. You log the set — it does the math, holds the clock, and pre-fills next time from what you actually did.',
 			steps: [
 				{
 					title: 'Open the workout.',
@@ -291,7 +290,7 @@ export const en: Dictionary = {
 				},
 				{
 					title: 'Confirm the planned set.',
-					body: "Same shape as last time, already filled. Tap once — it logs and moves you to the next set. Edit weight or reps if you actually went heavier; the app stays out of your way."
+					body: 'Same shape as last time, already filled. Tap once — it logs and moves you to the next set. Edit weight or reps if you actually went heavier; the app stays out of your way.'
 				},
 				{
 					title: 'Rest auto-starts.',

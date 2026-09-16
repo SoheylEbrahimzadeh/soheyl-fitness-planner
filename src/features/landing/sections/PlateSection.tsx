@@ -8,9 +8,24 @@ export const PlateSection: FC = () => {
 	return (
 		<SectionShell id="plate" marker={p.marker} title={p.title} kicker={p.kicker}>
 			<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-3">
-				<PlateCard eyebrow={p.cards[0].eyebrow} title={p.cards[0].title} body={p.cards[0].body} visual={<MacroStackDemo />} />
-				<PlateCard eyebrow={p.cards[1].eyebrow} title={p.cards[1].title} body={p.cards[1].body} visual={<LookupDemo />} />
-				<PlateCard eyebrow={p.cards[2].eyebrow} title={p.cards[2].title} body={p.cards[2].body} visual={<PlannerDemo weekTotalLabel={t('landing.plate.weekTotalLabel')} />} />
+				<PlateCard
+					eyebrow={p.cards[0].eyebrow}
+					title={p.cards[0].title}
+					body={p.cards[0].body}
+					visual={<MacroStackDemo />}
+				/>
+				<PlateCard
+					eyebrow={p.cards[1].eyebrow}
+					title={p.cards[1].title}
+					body={p.cards[1].body}
+					visual={<LookupDemo />}
+				/>
+				<PlateCard
+					eyebrow={p.cards[2].eyebrow}
+					title={p.cards[2].title}
+					body={p.cards[2].body}
+					visual={<PlannerDemo weekTotalLabel={t('landing.plate.weekTotalLabel')} />}
+				/>
 			</div>
 		</SectionShell>
 	)

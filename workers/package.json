@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev --d1=macromaxxing --port=8788 --live-reload",
+    "dev": "wrangler pages dev --d1=soheyl-fitness-planner --port=8788 --live-reload",
     "generate:wrangler": "wrangler types --env-file .dev.vars.template",
     "typecheck": "tsc --noEmit"
   },

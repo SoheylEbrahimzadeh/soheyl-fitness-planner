@@ -1,8 +1,8 @@
 import { SignUpButton } from '@clerk/clerk-react'
 import { ArrowRight } from 'lucide-react'
 import type { FC } from 'react'
-import { cn, useTranslation } from '~/lib'
 import { Button } from '~/components/ui'
+import { cn, useTranslation } from '~/lib'
 import { GridPaperBackground, MonoLabel } from '../components'
 
 export const Hero: FC = () => {
@@ -54,13 +54,19 @@ const HeroHeadline: FC = () => {
 	return (
 		<h1 className="-mx-0.5 font-display font-light text-[56px] text-ink leading-[0.92] tracking-[-0.02em] md:text-[112px]">
 			<span className="block animate-rise">{t('landing.hero.headlineLine1')}</span>
-			<span className="block animate-rise italic" style={{ animationDelay: '120ms', color: 'var(--color-accent)' }}>
+			<span
+				className="block animate-rise italic"
+				style={{ animationDelay: '120ms', color: 'var(--color-accent)' }}
+			>
 				{t('landing.hero.headlineAccent1')}
 			</span>
 			<span className="mt-2 block animate-rise" style={{ animationDelay: '260ms' }}>
 				{t('landing.hero.headlineLine2')}
 			</span>
-			<span className="block animate-rise italic" style={{ animationDelay: '380ms', color: 'var(--color-accent)' }}>
+			<span
+				className="block animate-rise italic"
+				style={{ animationDelay: '380ms', color: 'var(--color-accent)' }}
+			>
 				{t('landing.hero.headlineAccent2')}
 			</span>
 		</h1>
@@ -101,7 +107,7 @@ const HeroFootnotes: FC = () => {
 }
 
 const NutritionFactsPanel: FC = () => {
-	const { t, dict } = useTranslation()
+	const { dict } = useTranslation()
 	const p = dict.landing.hero.nutritionPanel
 	return (
 		<article className="relative border-4 border-ink/90 bg-surface-0 p-4 font-mono text-ink md:p-5">
@@ -126,7 +132,9 @@ const NutritionFactsPanel: FC = () => {
 				<span className="font-black font-mono text-[44px] text-macro-kcal tabular-nums leading-none">612</span>
 			</div>
 			<div className="my-2 h-[3px] bg-ink/90" />
-			<div className="flex justify-end text-[10px] text-ink-muted uppercase tracking-[0.15em]">{p.dailyIntakeLabel}</div>
+			<div className="flex justify-end text-[10px] text-ink-muted uppercase tracking-[0.15em]">
+				{p.dailyIntakeLabel}
+			</div>
 			{p.rows.map((row, i) => (
 				<NutritionRow
 					key={row.label}
@@ -199,7 +207,9 @@ const TrainingFactsPanel: FC = () => {
 				<span className="font-black font-mono text-[44px] text-accent tabular-nums leading-none">18</span>
 			</div>
 			<div className="my-2 h-[3px] bg-ink/90" />
-			<div className="flex justify-end text-[10px] text-ink-muted uppercase tracking-[0.15em]">{p.setsRepsE1rmLabel}</div>
+			<div className="flex justify-end text-[10px] text-ink-muted uppercase tracking-[0.15em]">
+				{p.setsRepsE1rmLabel}
+			</div>
 			<ExerciseRow name="Bench Press" sets="4 × 8" load="100 kg" e1rm="124" />
 			<ExerciseRow name="Incline DB" sets="3 × 10" load="32 kg" e1rm="42" />
 			<ExerciseRow name="Shoulder Press" sets="3 × 12" load="52 kg" e1rm="74" />

@@ -18,11 +18,18 @@ export const AutoSection: FC = () => {
 					{a.steps.map((s, i) => (
 						<li
 							key={s.title}
-							className={cn('grid grid-cols-[44px_1fr] gap-5 px-6 py-6', i !== 0 && 'border-edge border-t')}
+							className={cn(
+								'grid grid-cols-[44px_1fr] gap-5 px-6 py-6',
+								i !== 0 && 'border-edge border-t'
+							)}
 						>
-							<span className="font-mono text-accent text-xs uppercase tracking-[0.25em]">{STEP_NUMBERS[i]}</span>
+							<span className="font-mono text-accent text-xs uppercase tracking-[0.25em]">
+								{STEP_NUMBERS[i]}
+							</span>
 							<div>
-								<h3 className="font-display font-normal text-xl leading-tight md:text-2xl">{s.title}</h3>
+								<h3 className="font-display font-normal text-xl leading-tight md:text-2xl">
+									{s.title}
+								</h3>
 								<p className="mt-2 font-display text-base text-ink-muted leading-relaxed">{s.body}</p>
 							</div>
 						</li>

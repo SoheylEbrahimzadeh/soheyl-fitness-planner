@@ -9,8 +9,18 @@ export const CycleSection: FC = () => {
 	return (
 		<SectionShell id="cycle" marker={c.marker} title={c.title} kicker={c.kicker}>
 			<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-2">
-				<CycleCard eyebrow={c.cards[0].eyebrow} title={c.cards[0].title} body={c.cards[0].body} visual={<ProgramCyclePreview />} />
-				<CycleCard eyebrow={c.cards[1].eyebrow} title={c.cards[1].title} body={c.cards[1].body} visual={<TechniqueGuide />} />
+				<CycleCard
+					eyebrow={c.cards[0].eyebrow}
+					title={c.cards[0].title}
+					body={c.cards[0].body}
+					visual={<ProgramCyclePreview />}
+				/>
+				<CycleCard
+					eyebrow={c.cards[1].eyebrow}
+					title={c.cards[1].title}
+					body={c.cards[1].body}
+					visual={<TechniqueGuide />}
+				/>
 			</div>
 		</SectionShell>
 	)
@@ -100,9 +110,13 @@ const ProgramCyclePreview: FC = () => {
 								{t(`${c}nextLabel`)} <ChevronRight className="size-3" />
 							</span>
 						) : w.status === 'done' ? (
-							<span className="text-[10px] text-success uppercase tracking-[0.2em]">{t(`${c}doneLabel`)}</span>
+							<span className="text-[10px] text-success uppercase tracking-[0.2em]">
+								{t(`${c}doneLabel`)}
+							</span>
 						) : (
-							<span className="text-[10px] text-ink-faint uppercase tracking-[0.2em]">{t(`${c}queuedLabel`)}</span>
+							<span className="text-[10px] text-ink-faint uppercase tracking-[0.2em]">
+								{t(`${c}queuedLabel`)}
+							</span>
 						)}
 					</li>
 				))}
