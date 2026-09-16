@@ -1,6 +1,8 @@
-# macromaxxing
+# Soheyl Fitness
 
 A recipe nutrition tracker and workout logger for fitness enthusiasts who meal prep. Track macros per portion, plan weekly meals, and log workouts with biomechanical validation.
+
+Repository: https://github.com/SoheylEbrahimzadeh/soheyl-fitness-planner
 
 ## Features
 
@@ -146,17 +148,39 @@ Dark theme with warm soapstone undertones. Key tokens in `src/index.css`:
 - **Depth:** Borders-only strategy (no shadows), `edge` border color
 - **Radius:** Sharp (`4px`/`6px`) for instrument-grade precision
 
+## Getting Started (clone on any machine)
+
+Requirements: Node `^20.19.0 || >=22.12.0` (see `.nvmrc`/`engines` in `package.json`) and Corepack enabled (ships with Node ≥16.9; run `corepack enable` once) — Corepack then picks up the pinned `yarn@4.12.0` automatically, no global Yarn install needed.
+
+```bash
+# Clone
+git clone https://github.com/SoheylEbrahimzadeh/soheyl-fitness-planner.git
+cd soheyl-fitness-planner
+
+# Install dependencies (uses the pinned Yarn 4 via Corepack)
+corepack enable
+yarn
+
+# Frontend env — copy the example and fill in your own Clerk key
+cp .env.local.example .env.local
+
+# Backend env — copy the example and fill in your own local values
+cp workers/.dev.vars.template workers/.dev.vars
+```
+
+See [Environment Variables](#environment-variables) below for what each value is and where to get it. None of the real values belong in git — both `.env.local` and `workers/.dev.vars` are git-ignored.
+
 ## Development
 
 ```bash
-# Install dependencies
-yarn
-
-# Run dev server (frontend + backend)
+# Run dev server (frontend + backend), served at http://localhost:1337
 yarn dev
 
 # Build
 yarn build
+
+# Typecheck
+yarn typecheck
 
 # Lint/format
 yarn fix
@@ -169,12 +193,15 @@ yarn db:migrate    # Apply migrations to local D1
 yarn test
 ```
 
+`localhost:1337` (set in `vite.config.ts`) is only ever used for local development — the deployed app is not reachable through it and has no dependency on it. See [Deployment](#deployment) for the production URL setup.
+
 ## Environment Variables
 
-**Frontend** (`.env.local`):
+**Frontend** (`.env.local`, copy from `.env.local.example`):
 - `VITE_CLERK_PUBLISHABLE_KEY` — Clerk publishable key
+- `VITE_R2_BASE_URL` — public base URL for R2-hosted recipe images (optional for local dev)
 
-**Workers** (`.dev.vars` locally, Cloudflare dashboard for production):
+**Workers** (`.dev.vars` locally — copy from `workers/.dev.vars.template` — Cloudflare dashboard/GitHub Actions secrets for production):
 - `ENCRYPTION_SECRET` — 32-byte hex string for AES-GCM key encryption
 - `USDA_API_KEY` — USDA FoodData Central API key
 - `CLERK_PUBLISHABLE_KEY` — Clerk publishable key
@@ -184,6 +211,28 @@ yarn test
 - `REST_ALERTS_ENABLED` — runtime feature gate; production enables it while Pages previews set it to `false` in `workers/wrangler.toml`
 
 Rest alerts use the `macromaxxing-rest-notifications` Cloudflare Queue. Production needs the same VAPID key pair in the Pages project and the dedicated `macromaxxing-rest-notifications` Worker. The deploy workflow creates the queue, deploys its consumer before Pages, and configures both runtimes from the `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` GitHub Actions secrets. Never add either key to `wrangler.toml`.
+
+## Deployment
+
+Production deploys automatically on every push to `main` via `.github/workflows/deploy.yml`: lint → typecheck → test, then D1 migrations, the rest-notifications Worker + Queue, a `yarn build`, and `wrangler pages deploy` to Cloudflare Pages — the live URL is `https://<project-name>.pages.dev` (plus any custom domain attached in the Cloudflare dashboard), never `localhost`.
+
+Configure these once under **GitHub repo → Settings → Secrets and variables → Actions**:
+
+**Secrets:**
+- `CLOUDFLARE_API_TOKEN` — a Cloudflare API token with Pages + Workers + D1 + Queues edit permissions for the account (create one at https://dash.cloudflare.com/profile/api-tokens)
+- `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare account ID (Cloudflare dashboard → right sidebar of any domain, or **Workers & Pages → Overview**)
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — a Web Push VAPID key pair (generate with `npx web-push generate-vapid-keys`); used for rest-timer push notifications
+
+**Variables:**
+- `VITE_CLERK_PUBLISHABLE_KEY` — the production Clerk publishable key, baked into the client build
+- `VITE_R2_BASE_URL` — the public base URL for the production R2 image bucket
+
+**Cloudflare resources** referenced by `workers/wrangler.toml` / `workers/rest-notifications/wrangler.toml` that must exist under the same Cloudflare account before the first deploy succeeds (create them once, e.g. with `wrangler d1 create` / `wrangler r2 bucket create`, or via the dashboard):
+- D1 database `macromaxxing`
+- R2 bucket `macromaxxing-images`
+- Queue `macromaxxing-rest-notifications` (the deploy workflow creates this one automatically if missing)
+
+The Cloudflare Pages **project name** is derived automatically from the GitHub repository name (`soheyl-fitness-planner`) by the deploy workflow — no manual Pages project setup is needed beyond the account having the token/resources above.
 
 ## License
 
