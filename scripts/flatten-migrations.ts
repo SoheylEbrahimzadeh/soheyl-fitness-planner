@@ -12,9 +12,9 @@ for (const entry of readdirSync(migrationsDir, { withFileTypes: true }).sort((a,
 	if (!existsSync(source) || existsSync(destination)) continue
 
 	const migration = readFileSync(source, 'utf8')
-		.replace(/^CREATE TABLE /gm, 'CREATE TABLE IF NOT EXISTS ')
-		.replace(/^CREATE INDEX /gm, 'CREATE INDEX IF NOT EXISTS ')
-		.replace(/^CREATE UNIQUE INDEX /gm, 'CREATE UNIQUE INDEX IF NOT EXISTS ')
+		.replace(/^CREATE TABLE (?!IF NOT EXISTS )/gm, 'CREATE TABLE IF NOT EXISTS ')
+		.replace(/^CREATE INDEX (?!IF NOT EXISTS )/gm, 'CREATE INDEX IF NOT EXISTS ')
+		.replace(/^CREATE UNIQUE INDEX (?!IF NOT EXISTS )/gm, 'CREATE UNIQUE INDEX IF NOT EXISTS ')
 	writeFileSync(destination, migration)
 	console.info(`Flattened ${entry.name}/migration.sql`)
 }
