@@ -2,9 +2,12 @@ import { SignUpButton } from '@clerk/clerk-react'
 import { ArrowUpRight } from 'lucide-react'
 import { type FC, useEffect, useState } from 'react'
 import { Button } from '~/components/ui'
+import { useTranslation } from '~/lib'
 import { GridPaperBackground, MonoLabel } from '../components'
 
 export const FooterCta: FC = () => {
+	const { dict } = useTranslation()
+	const f = dict.landing.footerCta
 	const [now, setNow] = useState(() => new Date())
 	useEffect(() => {
 		const id = setInterval(() => setNow(new Date()), 60_000)
@@ -16,19 +19,19 @@ export const FooterCta: FC = () => {
 		<section className="relative overflow-hidden bg-surface-0">
 			<GridPaperBackground />
 			<div className="relative mx-auto max-w-5xl px-6 py-24 text-center md:py-32">
-				<MonoLabel className="text-accent">§ End of spec</MonoLabel>
+				<MonoLabel className="text-accent">{f.marker}</MonoLabel>
 				<h2 className="mt-6 font-display font-light text-5xl leading-[0.95] tracking-tight md:text-7xl">
-					Start the log today.
+					{f.titleLine1}
 					<br />
-					<span className="italic">Be better by Sunday.</span>
+					<span className="italic">{f.titleLine2}</span>
 				</h2>
 				<p className="mx-auto mt-6 max-w-xl font-display text-base text-ink-muted leading-relaxed md:text-lg">
-					Free account. No credit card. Your data stays yours. Install to your phone if you want.
+					{f.subtitle}
 				</p>
 				<div className="mt-10 flex flex-wrap items-center justify-center gap-6">
 					<SignUpButton mode="modal">
 						<Button size="lg" className="h-12 px-7 font-display text-base">
-							Create an account
+							{f.ctaCreate}
 							<ArrowUpRight className="size-4" />
 						</Button>
 					</SignUpButton>
@@ -36,7 +39,7 @@ export const FooterCta: FC = () => {
 						href="#plate"
 						className="group flex items-center gap-2 font-mono text-ink-muted text-xs uppercase tracking-[0.25em] transition-colors hover:text-ink"
 					>
-						Back to top
+						{f.ctaBackToTop}
 						<span className="transition-transform group-hover:-translate-y-0.5">↑</span>
 					</a>
 				</div>
@@ -46,7 +49,7 @@ export const FooterCta: FC = () => {
 						<span className="h-3 w-px bg-edge" />
 						<span className="tabular-nums">{stamp}</span>
 						<span className="h-3 w-px bg-edge" />
-						<span>Built for lifters who measure</span>
+						<span>{f.tagline}</span>
 					</div>
 				</div>
 			</div>

@@ -116,4 +116,193 @@ export interface Dictionary {
 		}
 		buildNewWeek: string
 	}
+	landing: {
+		hero: {
+			headlineLine1: string
+			headlineAccent1: string
+			headlineLine2: string
+			headlineAccent2: string
+			subhead: string
+			ctaStart: string
+			ctaSeeLog: string
+			specTagline: string
+			specEst: string
+			specSerial: string
+			specLive: string
+			footnotes: readonly [{ value: string; label: string }, { value: string; label: string }, { value: string; label: string }]
+			nutritionPanel: {
+				title: string
+				code: string
+				batchYieldLabel: string
+				batchYieldValue: string
+				servingSizeLabel: string
+				servingSizeValue: string
+				amountPerPortionLabel: string
+				caloriesLabel: string
+				dailyIntakeLabel: string
+				rows: readonly [
+					{ label: string; value: string; pct: string },
+					{ label: string; value: string; pct: string },
+					{ label: string; value: string; pct: string },
+					{ label: string; value: string; pct: string }
+				]
+				ingredientsLabel: string
+				ingredientsText: string
+			}
+			trainingPanel: {
+				title: string
+				code: string
+				sessionLabel: string
+				sessionValue: string
+				totalVolumeLabel: string
+				totalVolumeValue: string
+				workingSetsLoggedLabel: string
+				loadedLabel: string
+				setsRepsE1rmLabel: string
+				musclesLoadedLabel: string
+				musclesLoadedText: string
+			}
+		}
+		numbersRail: readonly [
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string },
+			{ value: string; label: string }
+		]
+		plate: {
+			marker: string
+			title: string
+			kicker: string
+			cards: readonly [
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string }
+			]
+			perRawLabel: string
+			perPortionLabel: string
+			perBatchLabel: string
+			localDbLabel: string
+			usdaApiLabel: string
+			aiLabel: string
+			weekTotalLabel: string
+		}
+		rack: {
+			marker: string
+			title: string
+			kicker: string
+			coverageMapLabel: string
+			lastDaysVolumeLabel: string
+			lowLabel: string
+			highLabel: string
+			features: readonly [
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string }
+			]
+		}
+		cycle: {
+			marker: string
+			title: string
+			kicker: string
+			cards: readonly [{ eyebrow: string; title: string; body: string }, { eyebrow: string; title: string; body: string }]
+			activeLabel: string
+			loopsLabel: string
+			nextLabel: string
+			doneLabel: string
+			queuedLabel: string
+			/** {{day}}, {{total}} */
+			dayOfCycle: string
+			wrapsToLabel: string
+			cuesLabel: string
+			pitfallsLabel: string
+			guideLabel: string
+		}
+		signal: {
+			marker: string
+			title: string
+			kicker: string
+			cards: readonly [
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string },
+				{ eyebrow: string; title: string; body: string }
+			]
+		}
+		auto: {
+			marker: string
+			title: string
+			kicker: string
+			steps: readonly [
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string },
+				{ title: string; body: string }
+			]
+		}
+		intelligence: {
+			marker: string
+			title: string
+			kicker: string
+			rows: readonly [
+				{ key: string; value: string; body: string },
+				{ key: string; value: string; body: string },
+				{ key: string; value: string; body: string },
+				{ key: string; value: string; body: string },
+				{ key: string; value: string; body: string },
+				{ key: string; value: string; body: string }
+			]
+		}
+		howItWorks: {
+			marker: string
+			title: string
+			kicker: string
+			stepLabel: string
+			steps: readonly [
+				{ title: string; body: string; meta: string },
+				{ title: string; body: string; meta: string },
+				{ title: string; body: string; meta: string },
+				{ title: string; body: string; meta: string }
+			]
+		}
+		faq: {
+			marker: string
+			title: string
+			kicker: string
+			qLabel: string
+			items: readonly [
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string },
+				{ q: string; a: string }
+			]
+			repoLinkLabel: string
+		}
+		footerCta: {
+			marker: string
+			titleLine1: string
+			titleLine2: string
+			subtitle: string
+			ctaCreate: string
+			ctaBackToTop: string
+			tagline: string
+		}
+	}
 }

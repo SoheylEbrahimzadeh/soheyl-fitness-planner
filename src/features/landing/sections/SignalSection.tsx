@@ -5,7 +5,7 @@ import { RecentPRsList } from '~/features/analytics/components/RecentPRsList'
 import { StalledList } from '~/features/analytics/components/StalledList'
 import { WeeklyVolumeChart } from '~/features/analytics/components/WeeklyVolumeChart'
 import { HistoryChart, type HistoryChartDatum } from '~/features/exercises/components/HistoryChart'
-import { cn } from '~/lib'
+import { cn, useTranslation } from '~/lib'
 import { MonoLabel, SectionShell } from '../components'
 
 type PRRow = ComponentProps<typeof RecentPRsList>['prs'][number]
@@ -13,57 +13,55 @@ type StalledRow = ComponentProps<typeof StalledList>['stalled'][number]
 type HeatmapRow = ComponentProps<typeof CalendarHeatmap>['data'][number]
 type VolumeRow = ComponentProps<typeof WeeklyVolumeChart>['data'][number]
 
-export const SignalSection: FC = () => (
-	<SectionShell
-		id="signal"
-		marker="§ 04 / Signal"
-		title="Logged sets become signal."
-		kicker="Every working set feeds a graph. PRs flag themselves. Stalls surface. The week's volume shows up by muscle."
-		variant="alt"
-	>
-		<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-2">
-			<SignalCard
-				eyebrow="Weekly volume"
-				title="Stacked by muscle group"
-				body="Working sets weighted by muscle intensity, summed per week, stacked by group. Read the trend; spot the muscle that quietly fell off."
-				visual={<WeeklyVolumeChart data={VOLUME_DATA} />}
-			/>
-			<SignalCard
-				eyebrow="PRs"
-				title="Detected, not declared"
-				body="When estimated 1RM beats the prior best by more than 0.5 kg, it flags itself. No streaks, no toasts — a quiet ↑ next to the lift."
-				visual={<RecentPRsList prs={PR_DATA} />}
-			/>
-			<SignalCard
-				eyebrow="Stalled"
-				title="Flatlines surface"
-				body="Three sessions without a top-set or e1RM gain and the lift surfaces here. Deload, swap, or push — the call is yours."
-				visual={<StalledList stalled={STALLED_DATA} />}
-			/>
-			<SignalCard
-				eyebrow="Calendar"
-				title="Density by day"
-				body="Sessions, working sets — coloured by intensity. The empty cells say more than the full ones."
-				visual={<CalendarHeatmap data={HEATMAP_DATA} weeks={10} />}
-			/>
-			<SignalCard
-				className="md:col-span-2"
-				eyebrow="Per-exercise"
-				title="e1RM over time"
-				body="Open any lift to see top set, e1RM, and volume per session. Every dot is one rep that earned it."
-				visual={
-					<div className="space-y-2">
-						<div className="flex items-baseline justify-between">
-							<MonoLabel>Barbell Bench Press · last 12 sessions</MonoLabel>
-							<span className="font-mono text-ink text-sm tabular-nums">119.4 kg</span>
-						</div>
-						<HistoryChart data={HISTORY_DATA} metric="e1rm" />
+export const SignalSection: FC = () => {
+	const { dict } = useTranslation()
+	const s = dict.landing.signal
+	return (
+		<SectionShell id="signal" marker={s.marker} title={s.title} kicker={s.kicker} variant="alt">
+			<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-2">
+				<SignalCard
+					eyebrow={s.cards[0].eyebrow}
+					title={s.cards[0].title}
+					body={s.cards[0].body}
+					visual={<WeeklyVolumeChart data={VOLUME_DATA} />}
+				/>
+				<SignalCard
+					eyebrow={s.cards[1].eyebrow}
+					title={s.cards[1].title}
+					body={s.cards[1].body}
+					visual={<RecentPRsList prs={PR_DATA} />}
+				/>
+				<SignalCard
+					eyebrow={s.cards[2].eyebrow}
+					title={s.cards[2].title}
+					body={s.cards[2].body}
+					visual={<StalledList stalled={STALLED_DATA} />}
+				/>
+				<SignalCard
+					eyebrow={s.cards[3].eyebrow}
+					title={s.cards[3].title}
+					body={s.cards[3].body}
+					visual={<CalendarHeatmap data={HEATMAP_DATA} weeks={10} />}
+				/>
+				<SignalCard
+					className="md:col-span-2"
+					eyebrow={s.cards[4].eyebrow}
+					title={s.cards[4].title}
+					body={s.cards[4].body}
+					visual={
+						<div className="space-y-2">
+							<div className="flex items-baseline justify-between">
+								<MonoLabel>Barbell Bench Press · last 12 sessions</MonoLabel>
+								<span className="font-mono text-ink text-sm tabular-nums">119.4 kg</span>
+							</div>
+							<HistoryChart data={HISTORY_DATA} metric="e1rm" />
 					</div>
 				}
 			/>
-		</div>
-	</SectionShell>
-)
+			</div>
+		</SectionShell>
+	)
+}
 
 interface SignalCardProps {
 	eyebrow: string

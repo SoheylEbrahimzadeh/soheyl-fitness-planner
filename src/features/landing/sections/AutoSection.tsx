@@ -3,67 +3,40 @@ import { type FC, useMemo, useState } from 'react'
 import { ExerciseGuideModal } from '~/features/workouts/components/ExerciseGuideModal'
 import { TimerModeView } from '~/features/workouts/components/TimerModeView'
 import { useElapsedTimer } from '~/features/workouts/hooks/useElapsedTimer'
-import { cn, type FlatSet } from '~/lib'
+import { cn, type FlatSet, useTranslation } from '~/lib'
 import { SectionShell } from '../components'
 
-const STEPS = [
-	{
-		n: '01',
-		title: 'Open the workout.',
-		body: 'The app pulls your last session, generates the warmup ramp, and pre-fills targets from the template. Sets, reps, weight, and set type — already there, ready to confirm.'
-	},
-	{
-		n: '02',
-		title: 'Confirm the planned set.',
-		body: 'Same shape as last time, already filled. Tap once — it logs and moves you to the next set. Edit weight or reps if you actually went heavier; the app stays out of your way.'
-	},
-	{
-		n: '03',
-		title: 'Rest auto-starts.',
-		body: 'Countdown = reps × 4 × goal × fatigue tier. Squats get longer recovery than curls. Compounds longer than isolations. Supersets swap to a short transition timer between exercises in a round, then a full rest once the round closes — no manual switching.'
-	},
-	{
-		n: '04',
-		title: 'Adjust on the fly.',
-		body: "Hit a wall on a working set? The app suggests backoff sets at -10% / -15% so you can still close the round at a real stimulus. Skip if you don't want them."
-	},
-	{
-		n: '05',
-		title: 'Finish — targets self-update.',
-		body: "Session review flags every divergence: heavier than planned, fewer reps, anything stalled. One tap accepts the new numbers. Next session pre-fills from what you actually did, not yesterday's wishful thinking."
-	}
-] as const
+const STEP_NUMBERS = ['01', '02', '03', '04', '05'] as const
 
-export const AutoSection: FC = () => (
-	<SectionShell
-		id="auto"
-		marker="§ 05 / Auto"
-		title="Turn off your brain at the gym."
-		kicker="The app calculates warmup, rest, and backoff. You log the set — it does the math, holds the clock, and pre-fills next time from what you actually did."
-	>
-		<div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16">
-			<ol className="border border-edge">
-				{STEPS.map((s, i) => (
-					<li
-						key={s.n}
-						className={cn('grid grid-cols-[44px_1fr] gap-5 px-6 py-6', i !== 0 && 'border-edge border-t')}
-					>
-						<span className="font-mono text-accent text-xs uppercase tracking-[0.25em]">{s.n}</span>
-						<div>
-							<h3 className="font-display font-normal text-xl leading-tight md:text-2xl">{s.title}</h3>
-							<p className="mt-2 font-display text-base text-ink-muted leading-relaxed">{s.body}</p>
-						</div>
-					</li>
-				))}
-			</ol>
-			<div className="flex items-start justify-center">
-				<div className="w-full max-w-[400px]">
-					<DemoTimerScreen />
+export const AutoSection: FC = () => {
+	const { dict } = useTranslation()
+	const a = dict.landing.auto
+	return (
+		<SectionShell id="auto" marker={a.marker} title={a.title} kicker={a.kicker}>
+			<div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-16">
+				<ol className="border border-edge">
+					{a.steps.map((s, i) => (
+						<li
+							key={s.title}
+							className={cn('grid grid-cols-[44px_1fr] gap-5 px-6 py-6', i !== 0 && 'border-edge border-t')}
+						>
+							<span className="font-mono text-accent text-xs uppercase tracking-[0.25em]">{STEP_NUMBERS[i]}</span>
+							<div>
+								<h3 className="font-display font-normal text-xl leading-tight md:text-2xl">{s.title}</h3>
+								<p className="mt-2 font-display text-base text-ink-muted leading-relaxed">{s.body}</p>
+							</div>
+						</li>
+					))}
+				</ol>
+				<div className="flex items-start justify-center">
+					<div className="w-full max-w-[400px]">
+						<DemoTimerScreen />
+					</div>
 				</div>
 			</div>
-		</div>
-	</SectionShell>
-)
+		</SectionShell>
+	)
+}
 
 // Mock state piped through the live TimerModeView component so the landing surface
 // always reflects the real timer-mode layout. Resting mid-session, working set 3/4 of

@@ -1,36 +1,20 @@
 import type { FC, ReactNode } from 'react'
-import { cn } from '~/lib'
+import { cn, useTranslation } from '~/lib'
 import { MonoLabel, SectionShell } from '../components'
 
-export const PlateSection: FC = () => (
-	<SectionShell
-		id="plate"
-		marker="§ 01 / Plate"
-		title="Meals tracked to the gram."
-		kicker="Recipes with ingredients, portion sizes, subrecipes, and cooked weight. Macros scale with everything."
-	>
-		<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-3">
-			<PlateCard
-				eyebrow="Recipe"
-				title="Gram-accurate math"
-				body="Ingredients in, macros out. Per-100 g, per-portion, per-batch. Subrecipes compose. Cooked weight adjusts density on the fly."
-				visual={<MacroStackDemo />}
-			/>
-			<PlateCard
-				eyebrow="Lookup"
-				title="Three sources, one box"
-				body="Local USDA database first. USDA FoodData Central next. Your AI provider last. Barcode scan. Density for scoops, tbsps, pieces."
-				visual={<LookupDemo />}
-			/>
-			<PlateCard
-				eyebrow="Plan"
-				title="The week, allocated"
-				body="Create a plan. Add recipes to its inventory. Drop portions into Mon → Sun slots. Over-allocate and we warn you — never block you."
-				visual={<PlannerDemo />}
-			/>
-		</div>
-	</SectionShell>
-)
+export const PlateSection: FC = () => {
+	const { t, dict } = useTranslation()
+	const p = dict.landing.plate
+	return (
+		<SectionShell id="plate" marker={p.marker} title={p.title} kicker={p.kicker}>
+			<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-3">
+				<PlateCard eyebrow={p.cards[0].eyebrow} title={p.cards[0].title} body={p.cards[0].body} visual={<MacroStackDemo />} />
+				<PlateCard eyebrow={p.cards[1].eyebrow} title={p.cards[1].title} body={p.cards[1].body} visual={<LookupDemo />} />
+				<PlateCard eyebrow={p.cards[2].eyebrow} title={p.cards[2].title} body={p.cards[2].body} visual={<PlannerDemo weekTotalLabel={t('landing.plate.weekTotalLabel')} />} />
+			</div>
+		</SectionShell>
+	)
+}
 
 const PlateCard: FC<{ eyebrow: string; title: string; body: string; visual: ReactNode }> = ({
 	eyebrow,
@@ -46,25 +30,28 @@ const PlateCard: FC<{ eyebrow: string; title: string; body: string; visual: Reac
 	</article>
 )
 
-const MacroStackDemo: FC = () => (
-	<div className="space-y-3 font-mono">
-		<div className="flex items-baseline justify-between">
-			<MonoLabel>Per 100 g raw</MonoLabel>
-			<span className="text-ink text-sm tabular-nums">214 kcal</span>
+const MacroStackDemo: FC = () => {
+	const { t } = useTranslation()
+	return (
+		<div className="space-y-3 font-mono">
+			<div className="flex items-baseline justify-between">
+				<MonoLabel>{t('landing.plate.perRawLabel')}</MonoLabel>
+				<span className="text-ink text-sm tabular-nums">214 kcal</span>
+			</div>
+			<MacroStackBar protein={35} carbs={40} fat={20} fiber={5} />
+			<div className="mt-6 flex items-baseline justify-between">
+				<MonoLabel>{t('landing.plate.perPortionLabel')}</MonoLabel>
+				<span className="text-ink text-sm tabular-nums">612 kcal</span>
+			</div>
+			<MacroStackBar protein={38} carbs={38} fat={19} fiber={5} />
+			<div className="mt-6 flex items-baseline justify-between">
+				<MonoLabel>{t('landing.plate.perBatchLabel')}</MonoLabel>
+				<span className="text-ink text-sm tabular-nums">3,672 kcal</span>
+			</div>
+			<MacroStackBar protein={38} carbs={38} fat={19} fiber={5} />
 		</div>
-		<MacroStackBar protein={35} carbs={40} fat={20} fiber={5} />
-		<div className="mt-6 flex items-baseline justify-between">
-			<MonoLabel>Per portion · 285 g</MonoLabel>
-			<span className="text-ink text-sm tabular-nums">612 kcal</span>
-		</div>
-		<MacroStackBar protein={38} carbs={38} fat={19} fiber={5} />
-		<div className="mt-6 flex items-baseline justify-between">
-			<MonoLabel>Per batch · 6 portions</MonoLabel>
-			<span className="text-ink text-sm tabular-nums">3,672 kcal</span>
-		</div>
-		<MacroStackBar protein={38} carbs={38} fat={19} fiber={5} />
-	</div>
-)
+	)
+}
 
 const MacroStackBar: FC<{ protein: number; carbs: number; fat: number; fiber: number }> = ({
 	protein,
@@ -80,25 +67,28 @@ const MacroStackBar: FC<{ protein: number; carbs: number; fat: number; fiber: nu
 	</div>
 )
 
-const LookupDemo: FC = () => (
-	<div className="space-y-2 font-mono text-xs">
-		<div className="flex items-center gap-2 border border-edge bg-surface-1 px-3 py-2">
-			<span className="text-accent">›</span>
-			<span className="text-ink">chicken thigh</span>
-			<span className="ml-auto text-ink-faint">↵</span>
+const LookupDemo: FC = () => {
+	const { t } = useTranslation()
+	return (
+		<div className="space-y-2 font-mono text-xs">
+			<div className="flex items-center gap-2 border border-edge bg-surface-1 px-3 py-2">
+				<span className="text-accent">›</span>
+				<span className="text-ink">chicken thigh</span>
+				<span className="ml-auto text-ink-faint">↵</span>
+			</div>
+			<LookupHit source="USDA" name="Chicken, thigh, raw" meta="170 kcal · 17 g P · 0 g C · 11 g F" />
+			<LookupHit source="USDA" name="Chicken, thigh, roasted" meta="209 kcal · 26 g P · 0 g C · 11 g F" />
+			<LookupHit source="AI" name="Chicken thigh · skinless" meta="119 kcal · 21 g P · 0 g C · 4 g F" />
+			<div className="mt-4 flex items-center gap-4 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
+				<span>{t('landing.plate.localDbLabel')}</span>
+				<span>→</span>
+				<span>{t('landing.plate.usdaApiLabel')}</span>
+				<span>→</span>
+				<span className="text-accent">{t('landing.plate.aiLabel')}</span>
+			</div>
 		</div>
-		<LookupHit source="USDA" name="Chicken, thigh, raw" meta="170 kcal · 17 g P · 0 g C · 11 g F" />
-		<LookupHit source="USDA" name="Chicken, thigh, roasted" meta="209 kcal · 26 g P · 0 g C · 11 g F" />
-		<LookupHit source="AI" name="Chicken thigh · skinless" meta="119 kcal · 21 g P · 0 g C · 4 g F" />
-		<div className="mt-4 flex items-center gap-4 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
-			<span>Local DB</span>
-			<span>→</span>
-			<span>USDA API</span>
-			<span>→</span>
-			<span className="text-accent">AI</span>
-		</div>
-	</div>
-)
+	)
+}
 
 const LookupHit: FC<{ source: string; name: string; meta: string }> = ({ source, name, meta }) => (
 	<div className="grid grid-cols-[auto_1fr] gap-x-3 border-edge border-b pb-2 last:border-b-0">
@@ -110,7 +100,7 @@ const LookupHit: FC<{ source: string; name: string; meta: string }> = ({ source,
 	</div>
 )
 
-const PlannerDemo: FC = () => {
+const PlannerDemo: FC<{ weekTotalLabel: string }> = ({ weekTotalLabel }) => {
 	const days = [
 		{ label: 'M', id: 'mon' },
 		{ label: 'T', id: 'tue' },
@@ -168,7 +158,7 @@ const PlannerDemo: FC = () => {
 				))}
 			</div>
 			<div className="mt-3 flex items-baseline justify-between">
-				<MonoLabel>Week total</MonoLabel>
+				<MonoLabel>{weekTotalLabel}</MonoLabel>
 				<span className="text-ink tabular-nums">12,640 kcal · 1,120 g P</span>
 			</div>
 		</div>

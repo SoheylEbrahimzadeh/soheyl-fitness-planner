@@ -1,31 +1,20 @@
 import { ChevronRight, RotateCw } from 'lucide-react'
 import type { FC, ReactNode } from 'react'
-import { cn } from '~/lib'
+import { cn, useTranslation } from '~/lib'
 import { MonoLabel, SectionShell } from '../components'
 
-export const CycleSection: FC = () => (
-	<SectionShell
-		id="cycle"
-		marker="§ 03 / Cycle"
-		title="Programs that loop. Cues that stick."
-		kicker="Pick a program. The dashboard cycles through it. Open any exercise for cues, pitfalls, and the rep that earned it."
-	>
-		<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-2">
-			<CycleCard
-				eyebrow="Programs"
-				title="Named cycles, active by default"
-				body="Group templates into a program — Push / Pull / Legs, Upper / Lower, whatever. Star one as active and the dashboard tells you what's next, by day-of-cycle, not by guess."
-				visual={<ProgramCyclePreview />}
-			/>
-			<CycleCard
-				eyebrow="Technique"
-				title="The coach lives in the lift"
-				body="Every exercise carries its own technique guide — description, cues to focus on, pitfalls to avoid. Curated for system lifts, editable on your own. One tap from the set you're about to perform."
-				visual={<TechniqueGuide />}
-			/>
-		</div>
-	</SectionShell>
-)
+export const CycleSection: FC = () => {
+	const { dict } = useTranslation()
+	const c = dict.landing.cycle
+	return (
+		<SectionShell id="cycle" marker={c.marker} title={c.title} kicker={c.kicker}>
+			<div className="grid gap-px overflow-hidden border border-edge bg-edge md:grid-cols-2">
+				<CycleCard eyebrow={c.cards[0].eyebrow} title={c.cards[0].title} body={c.cards[0].body} visual={<ProgramCyclePreview />} />
+				<CycleCard eyebrow={c.cards[1].eyebrow} title={c.cards[1].title} body={c.cards[1].body} visual={<TechniqueGuide />} />
+			</div>
+		</SectionShell>
+	)
+}
 
 interface CycleCardProps {
 	eyebrow: string
@@ -60,67 +49,71 @@ const PROGRAM = {
 	]
 } as const
 
-const ProgramCyclePreview: FC = () => (
-	<div className="space-y-4 font-mono">
-		<div className="flex items-center justify-between">
-			<div className="flex items-center gap-2">
-				<MonoLabel className="text-accent">Active</MonoLabel>
-				<span className="text-ink text-sm">{PROGRAM.name}</span>
+const ProgramCyclePreview: FC = () => {
+	const { t } = useTranslation()
+	const c = 'landing.cycle.'
+	return (
+		<div className="space-y-4 font-mono">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-2">
+					<MonoLabel className="text-accent">{t(`${c}activeLabel`)}</MonoLabel>
+					<span className="text-ink text-sm">{PROGRAM.name}</span>
+				</div>
+				<div className="flex items-center gap-1.5 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
+					<RotateCw className="size-3" />
+					<span>{t(`${c}loopsLabel`)}</span>
+				</div>
 			</div>
-			<div className="flex items-center gap-1.5 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
-				<RotateCw className="size-3" />
-				<span>Loops</span>
-			</div>
-		</div>
-		<ol className="border border-edge">
-			{PROGRAM.workouts.map((w, i) => (
-				<li
-					key={w.name}
-					className={cn(
-						'grid grid-cols-[24px_1fr_auto] items-center gap-3 px-4 py-3 text-sm',
-						i !== 0 && 'border-edge border-t',
-						w.status === 'next' && 'bg-accent/5'
-					)}
-				>
-					<span
+			<ol className="border border-edge">
+				{PROGRAM.workouts.map((w, i) => (
+					<li
+						key={w.name}
 						className={cn(
-							'inline-flex size-6 items-center justify-center border font-mono text-[11px] tabular-nums',
-							w.status === 'next' ? 'border-accent text-accent' : 'border-edge text-ink-faint'
+							'grid grid-cols-[24px_1fr_auto] items-center gap-3 px-4 py-3 text-sm',
+							i !== 0 && 'border-edge border-t',
+							w.status === 'next' && 'bg-accent/5'
 						)}
 					>
-						{w.n}
-					</span>
-					<div className="min-w-0">
-						<div
+						<span
 							className={cn(
-								'font-display text-base',
-								w.status === 'done' && 'text-ink-muted',
-								w.status === 'next' && 'text-ink',
-								w.status === 'queued' && 'text-ink'
+								'inline-flex size-6 items-center justify-center border font-mono text-[11px] tabular-nums',
+								w.status === 'next' ? 'border-accent text-accent' : 'border-edge text-ink-faint'
 							)}
 						>
-							{w.name}
-						</div>
-						<div className="text-[10px] text-ink-faint">{w.meta}</div>
-					</div>
-					{w.status === 'next' ? (
-						<span className="flex items-center gap-1 text-[10px] text-accent uppercase tracking-[0.2em]">
-							Next <ChevronRight className="size-3" />
+							{w.n}
 						</span>
-					) : w.status === 'done' ? (
-						<span className="text-[10px] text-success uppercase tracking-[0.2em]">Done</span>
-					) : (
-						<span className="text-[10px] text-ink-faint uppercase tracking-[0.2em]">Queued</span>
-					)}
-				</li>
-			))}
-		</ol>
-		<div className="flex items-center justify-between border-edge border-t pt-3 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
-			<span>Day 4 of 6</span>
-			<span>↻ Wraps to Push A</span>
+						<div className="min-w-0">
+							<div
+								className={cn(
+									'font-display text-base',
+									w.status === 'done' && 'text-ink-muted',
+									w.status === 'next' && 'text-ink',
+									w.status === 'queued' && 'text-ink'
+								)}
+							>
+								{w.name}
+							</div>
+							<div className="text-[10px] text-ink-faint">{w.meta}</div>
+						</div>
+						{w.status === 'next' ? (
+							<span className="flex items-center gap-1 text-[10px] text-accent uppercase tracking-[0.2em]">
+								{t(`${c}nextLabel`)} <ChevronRight className="size-3" />
+							</span>
+						) : w.status === 'done' ? (
+							<span className="text-[10px] text-success uppercase tracking-[0.2em]">{t(`${c}doneLabel`)}</span>
+						) : (
+							<span className="text-[10px] text-ink-faint uppercase tracking-[0.2em]">{t(`${c}queuedLabel`)}</span>
+						)}
+					</li>
+				))}
+			</ol>
+			<div className="flex items-center justify-between border-edge border-t pt-3 text-[10px] text-ink-faint uppercase tracking-[0.2em]">
+				<span>{t(`${c}dayOfCycle`, { day: 4, total: 6 })}</span>
+				<span>↻ {t(`${c}wrapsToLabel`, { name: 'Push A' })}</span>
+			</div>
 		</div>
-	</div>
-)
+	)
+}
 
 // ---------------------------------------------------------------------------
 // Technique guide — mirrors ExerciseGuideContent.tsx
@@ -143,47 +136,51 @@ const GUIDE = {
 	]
 } as const
 
-const TechniqueGuide: FC = () => (
-	<div className="space-y-5 font-mono">
-		<header className="flex items-baseline justify-between">
-			<div>
-				<div className="font-display text-ink text-xl leading-tight md:text-2xl">{GUIDE.name}</div>
-				<div className="mt-1 text-[10px] text-ink-faint uppercase tracking-[0.2em]">{GUIDE.tag}</div>
-			</div>
-			<span className="font-mono text-[10px] text-ink-faint uppercase tracking-[0.2em]">Guide</span>
-		</header>
-		<p className="font-display text-ink-muted text-sm leading-relaxed">{GUIDE.description}</p>
-		<section className="border-success/60 border-l-2 pl-4">
-			<div className="mb-2 flex items-center gap-2 text-[10px] text-success uppercase tracking-[0.2em]">
-				<span aria-hidden>⚡</span>
-				<span>Cues</span>
-			</div>
-			<ul className="space-y-1.5 font-display text-ink text-sm leading-relaxed">
-				{GUIDE.cues.map(c => (
-					<li key={c} className="flex gap-2">
-						<span aria-hidden className="text-success">
-							·
-						</span>
-						<span>{c}</span>
-					</li>
-				))}
-			</ul>
-		</section>
-		<section className="border-macro-fat/60 border-l-2 pl-4">
-			<div className="mb-2 flex items-center gap-2 text-[10px] text-macro-fat uppercase tracking-[0.2em]">
-				<span aria-hidden>⚠</span>
-				<span>Pitfalls</span>
-			</div>
-			<ul className="space-y-1.5 font-display text-ink text-sm leading-relaxed">
-				{GUIDE.pitfalls.map(p => (
-					<li key={p} className="flex gap-2">
-						<span aria-hidden className="text-macro-fat">
-							·
-						</span>
-						<span>{p}</span>
-					</li>
-				))}
-			</ul>
-		</section>
-	</div>
-)
+const TechniqueGuide: FC = () => {
+	const { dict } = useTranslation()
+	const c = dict.landing.cycle
+	return (
+		<div className="space-y-5 font-mono">
+			<header className="flex items-baseline justify-between">
+				<div>
+					<div className="font-display text-ink text-xl leading-tight md:text-2xl">{GUIDE.name}</div>
+					<div className="mt-1 text-[10px] text-ink-faint uppercase tracking-[0.2em]">{GUIDE.tag}</div>
+				</div>
+				<span className="font-mono text-[10px] text-ink-faint uppercase tracking-[0.2em]">{c.guideLabel}</span>
+			</header>
+			<p className="font-display text-ink-muted text-sm leading-relaxed">{GUIDE.description}</p>
+			<section className="border-success/60 border-l-2 pl-4">
+				<div className="mb-2 flex items-center gap-2 text-[10px] text-success uppercase tracking-[0.2em]">
+					<span aria-hidden>⚡</span>
+					<span>{c.cuesLabel}</span>
+				</div>
+				<ul className="space-y-1.5 font-display text-ink text-sm leading-relaxed">
+					{GUIDE.cues.map(cue => (
+						<li key={cue} className="flex gap-2">
+							<span aria-hidden className="text-success">
+								·
+							</span>
+							<span>{cue}</span>
+						</li>
+					))}
+				</ul>
+			</section>
+			<section className="border-macro-fat/60 border-l-2 pl-4">
+				<div className="mb-2 flex items-center gap-2 text-[10px] text-macro-fat uppercase tracking-[0.2em]">
+					<span aria-hidden>⚠</span>
+					<span>{c.pitfallsLabel}</span>
+				</div>
+				<ul className="space-y-1.5 font-display text-ink text-sm leading-relaxed">
+					{GUIDE.pitfalls.map(pf => (
+						<li key={pf} className="flex gap-2">
+							<span aria-hidden className="text-macro-fat">
+								·
+							</span>
+							<span>{pf}</span>
+						</li>
+					))}
+				</ul>
+			</section>
+		</div>
+	)
+}
