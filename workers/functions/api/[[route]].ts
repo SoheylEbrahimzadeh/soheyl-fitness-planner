@@ -21,6 +21,17 @@ const app = new Hono<HonoEnv>()
 app.use('*', cors())
 app.use('*', clerkMiddleware())
 
+// Unauthenticated liveness/readiness probe for post-deploy verification — pings
+// D1 directly (bypassing Drizzle) to keep this route dependency-free and fast.
+app.get('/api/health', async c => {
+	try {
+		await c.env.DB.prepare('SELECT 1').first()
+		return c.json({ status: 'ok', time: new Date().toISOString() })
+	} catch (err) {
+		return c.json({ status: 'error', error: err instanceof Error ? err.message : 'unknown error' }, 503)
+	}
+})
+
 // ─── Image Upload/Delete (raw Hono routes, tRPC doesn't support multipart) ───
 
 app.post('/api/recipes/:id/image', async c => {

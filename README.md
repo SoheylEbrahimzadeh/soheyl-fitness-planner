@@ -170,6 +170,12 @@ cp workers/.dev.vars.template workers/.dev.vars
 
 See [Environment Variables](#environment-variables) below for what each value is and where to get it. None of the real values belong in git — both `.env.local` and `workers/.dev.vars` are git-ignored.
 
+### Develop from any machine (no local setup)
+
+`.devcontainer/devcontainer.json` defines a ready-to-run [GitHub Codespaces](https://github.com/features/codespaces) environment: Node 22, Corepack, and the two example env files are copied in automatically on container creation. To use it: open the repository on GitHub → **Code → Codespaces → Create codespace on main**. Ports `1337` (web) and `8788` (API/local D1) are forwarded automatically; fill in real values in `.env.local` / `workers/.dev.vars` inside the codespace the same way you would locally (see above), then run `yarn dev`.
+
+This makes the full loop machine-independent: **GitHub → Codespace (or any clone) → edit → `yarn check` → commit → push → `deploy.yml` deploys automatically.** No step depends on this Mac, Claude Desktop, or any process running outside of GitHub/Cloudflare.
+
 ## Development
 
 ```bash
@@ -233,6 +239,22 @@ Configure these once under **GitHub repo → Settings → Secrets and variables 
 - Queue `macromaxxing-rest-notifications` (the deploy workflow creates this one automatically if missing)
 
 The Cloudflare Pages **project name** is derived automatically from the GitHub repository name (`soheyl-fitness-planner`) by the deploy workflow — no manual Pages project setup is needed beyond the account having the token/resources above.
+
+**Verifying a deploy:** `GET https://<project-name>.pages.dev/api/health` pings D1 directly and returns `{"status":"ok","time":"..."}` (HTTP 503 with an error message if the D1 binding is unreachable) — no auth required, safe to use as an uptime check.
+
+## Hosting Cost
+
+Every piece of this stack has a free tier and current usage fits comfortably inside it — no paid Cloudflare or Clerk plan is required to run this in production:
+
+| Service | Free tier | Notes |
+|---|---|---|
+| Cloudflare Pages + Pages Functions | 100,000 requests/day, unlimited static bandwidth | Functions billed as Workers requests |
+| Cloudflare D1 | 5M rows read/day, 100K rows written/day, 5GB storage | |
+| Cloudflare R2 | 10GB storage/month, 1M Class A + 10M Class B ops/month, **no egress fee** | |
+| Cloudflare Queues | 10,000 operations/day, 24h retention | Moved to the free plan Feb 2026 |
+| Clerk | 50,000 monthly retained users | Hobby plan, no credit card required |
+
+A custom domain (optional — `*.pages.dev` works out of the box) is the only line item that could cost anything, and only if you buy one.
 
 ## License
 
