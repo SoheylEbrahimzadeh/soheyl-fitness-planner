@@ -17,7 +17,7 @@ type ExerciseHistoryResult = RouterOutput['workout']['exerciseHistory']
 
 /**
  * MCP Apps (ext-apps) interactive UI: a UI tool renders inline in claude.ai via ONE shared HTML
- * resource — the widget shell `ui://macromaxxing/widgets.html` (built from src/mcp-widgets/ by
+ * resource — the widget shell `ui://soheyl-fitness/widgets.html` (built from src/mcp-widgets/ by
  * scripts/build-widgets.ts, imported below as `WIDGET_HTML`). The server ships
  * `structuredContent { widget, data }`; the shell mounts the matching React view fed by that data —
  * the SAME MuscleLoadPanel/BodyMap the app renders, so the in-Claude preview can't drift.
@@ -27,7 +27,7 @@ type ExerciseHistoryResult = RouterOutput['workout']['exerciseHistory']
  * a host that can't render UI is unaffected. Adding a widget = one `UI_TOOLS` entry (widget id +
  * result→data mapper) + one variant in src/mcp-widgets/widget.tsx.
  */
-const WIDGETS_UI = 'ui://macromaxxing/widgets.html'
+const WIDGETS_UI = 'ui://soheyl-fitness/widgets.html'
 
 /** workoutMuscleLoad result → MuscleLoadWidgetView data (src/mcp-widgets/MuscleLoadWidgetView.tsx). */
 function mapWorkoutMuscleLoad(result: WorkoutMuscleLoadResult) {
@@ -97,7 +97,7 @@ export async function handleMcpRequest(
 	env: Cloudflare.Env
 ): Promise<Response> {
 	const server = new McpServer(
-		{ name: 'macromaxxing', version: '1.0.0' },
+		{ name: 'soheyl-fitness', version: '1.0.0' },
 		{ jsonSchemaValidator: new CfWorkerJsonSchemaValidator(), instructions: MCP_INSTRUCTIONS }
 	)
 

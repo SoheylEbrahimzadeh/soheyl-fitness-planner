@@ -274,15 +274,15 @@ function getMcpConfig(client: McpClient, endpoint: string, token?: string): stri
 	switch (client) {
 		case 'claude-desktop':
 			return JSON.stringify(
-				{ mcpServers: { macromaxxing: { url: endpoint, headers: { Authorization: `Bearer ${bearer}` } } } },
+				{ mcpServers: { 'soheyl-fitness': { url: endpoint, headers: { Authorization: `Bearer ${bearer}` } } } },
 				null,
 				2
 			)
 		case 'claude-code':
-			return `claude mcp add macromaxxing --transport http "${endpoint}" --header "Authorization: Bearer ${bearer}"`
+			return `claude mcp add soheyl-fitness --transport http "${endpoint}" --header "Authorization: Bearer ${bearer}"`
 		case 'cursor':
 			return JSON.stringify(
-				{ mcpServers: { macromaxxing: { url: endpoint, headers: { Authorization: `Bearer ${bearer}` } } } },
+				{ mcpServers: { 'soheyl-fitness': { url: endpoint, headers: { Authorization: `Bearer ${bearer}` } } } },
 				null,
 				2
 			)

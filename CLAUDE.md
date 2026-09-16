@@ -1,4 +1,4 @@
-# Macromaxxing
+# Soheyl Fitness
 
 Recipe nutrition tracker for meal preppers. Track macros per portion.
 
@@ -16,7 +16,7 @@ Recipe nutrition tracker for meal preppers. Track macros per portion.
 
 ## Environments
 
-- **Production:** https://macromaxxing.com (auto-deploys from `main` via Cloudflare Pages)
+- **Production:** `https://<cloudflare-pages-project>.pages.dev` (auto-deploys from `main` via Cloudflare Pages; see README.md#deployment for the exact URL and required secrets)
 
 ## Commands
 
@@ -766,7 +766,7 @@ GET    /.well-known/oauth-authorization-server        # RFC 8414 metadata (proxi
 
 Stateless mode (new server per request). Only procedures with `.meta({ description })` are exposed. Tool names follow the pattern `namespace_method` (e.g., `recipe_list`). Requires `nodejs_compat` flag in `wrangler.toml` (for `Buffer` used by `@clerk/mcp-tools`).
 
-**MCP Apps interactive widgets** — UI-enabled tools render inline in Claude (Desktop / claude.ai custom connector) via the MCP Apps extension (`@modelcontextprotocol/ext-apps`). ONE shared HTML resource `ui://macromaxxing/widgets.html` serves every widget; the server ships `structuredContent { widget, data }` and the shell mounts the matching React view. **Maximum reuse:** the widget mounts the SAME app components (e.g. `MuscleLoadPanel`/`BodyMap`) — the in-Claude preview can't drift from the app. Non-writing/read-only by design (hover interactivity is free; no back-channel tool calls).
+**MCP Apps interactive widgets** — UI-enabled tools render inline in Claude (Desktop / claude.ai custom connector) via the MCP Apps extension (`@modelcontextprotocol/ext-apps`). ONE shared HTML resource `ui://soheyl-fitness/widgets.html` serves every widget; the server ships `structuredContent { widget, data }` and the shell mounts the matching React view. **Maximum reuse:** the widget mounts the SAME app components (e.g. `MuscleLoadPanel`/`BodyMap`) — the in-Claude preview can't drift from the app. Non-writing/read-only by design (hover interactivity is free; no back-channel tool calls).
 - **Registry:** `UI_TOOLS` in `workers/functions/lib/mcp.ts` maps `toolName → { widget, map }` (result→data mapper). UI tools get `_meta.ui.resourceUri` via `registerAppTool`; every other tool stays text-only (`content[]` fallback preserved — hosts that can't render UI are unaffected). Pure derivation helpers live in `mcp-tools.ts` (split out so `mcp.test.ts` doesn't import the generated `WIDGET_HTML`).
 - **Source** in `src/mcp-widgets/` (app React code — `~`-aliased, typechecked by `typecheck:app`). `widget.tsx` boots the ext-apps `App`; presentational views (`MuscleLoadWidgetView`) are separate so the render fixture mounts them without the bootstrap.
 - **Build:** `yarn generate:widget` (`scripts/build-widgets.ts` → `vite.widget.config.ts`) bundles React+Tailwind, inlines it into `workers/functions/widgets/widgets.generated.ts` (`export const WIDGET_HTML`). Gitignored codegen artifact wired into `generate:*`, so `yarn generate` (setup action + conductor-setup + typecheck) builds it — no CI/deploy edits needed. Current widget: `workout_workoutMuscleLoad → muscleLoad`. Add one = one `UI_TOOLS` entry + one `WidgetPayload` variant + one branch in `widget.tsx`. Verify a render with `scripts/verify-widget.ts` (Vite fixture → inlined HTML → headless screenshot).

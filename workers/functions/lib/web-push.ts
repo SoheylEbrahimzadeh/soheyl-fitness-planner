@@ -1,6 +1,6 @@
 import * as webPush from 'web-push'
 
-const VAPID_SUBJECT = 'mailto:support@macromaxxing.com'
+const VAPID_SUBJECT = 'mailto:soheyl.ebrahimzadeh@gmail.com'
 const PUSH_TTL_SECONDS = 30
 
 export interface StoredPushSubscription {

@@ -5,7 +5,7 @@ import { type MuscleLoadWidgetData, MuscleLoadWidgetView } from './MuscleLoadWid
 import './widget.css'
 
 /**
- * MCP Apps widget shell (the `ui://macromaxxing/widgets.html` resource, built by
+ * MCP Apps widget shell (the `ui://soheyl-fitness/widgets.html` resource, built by
  * scripts/build-widgets.ts). Boots the ext-apps `App`, receives the tool result the host delivers
  * via `structuredContent { widget, data }` (server side: `UI_TOOLS` in workers/functions/lib/mcp.ts),
  * and mounts the matching view. Adding a widget = one `WidgetPayload` variant + one branch here.
@@ -40,7 +40,7 @@ function render() {
 	)
 }
 
-const app = new App({ name: 'macromaxxing-widgets', version: '1.0.0' })
+const app = new App({ name: 'soheyl-fitness-widgets', version: '1.0.0' })
 
 app.ontoolresult = params => {
 	payload = isWidgetPayload(params.structuredContent) ? params.structuredContent : null
