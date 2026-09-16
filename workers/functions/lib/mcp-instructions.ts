@@ -15,7 +15,7 @@
  * tools or read from the user's own settings.
  */
 
-export const MCP_INSTRUCTIONS = `Macromaxxing is a nutrition + strength-training tracker. It manages recipes, ingredients, and meal plans (per-portion macro tracking), and workout exercises, templates, programs, and logged sessions (hypertrophy/strength training with MEV/MAV/MRV weekly volume landmarks). Every tool operates on the authenticated user's own data; pull live state from the data tools rather than assuming it.
+export const MCP_INSTRUCTIONS = `Soheyl Fitness is a nutrition + strength-training tracker. It manages recipes, ingredients, and meal plans (per-portion macro tracking), and workout exercises, templates, programs, and logged sessions (hypertrophy/strength training with MEV/MAV/MRV weekly volume landmarks). Every tool operates on the authenticated user's own data; pull live state from the data tools rather than assuming it.
 
 When designing or modifying TRAINING programs, these are non-negotiable:
 
@@ -29,7 +29,7 @@ When designing or modifying TRAINING programs, these are non-negotiable:
 
 Call workout_guide (no arguments) for the full conventions reference: fatigue tiers, rep ranges, muscle-intensity scale, the volume-landmark table, movement-family classification, home/gym programming, bodyweight exercise semantics, and tool gotchas.`
 
-export const WORKOUT_GUIDE = `# Macromaxxing — Training & Program Design Guide
+export const WORKOUT_GUIDE = `# Soheyl Fitness — Training & Program Design Guide
 
 Stable conventions for designing exercises, templates, and programs. Live training state (current program, sessions, body metrics) must be pulled from the data tools and from the user's settings — never assumed from this document.
 

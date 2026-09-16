@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const SUFFIX = 'Macromaxxing'
+const SUFFIX = 'Soheyl Fitness'
 
 export function useDocumentTitle(title?: string) {
 	useEffect(() => {

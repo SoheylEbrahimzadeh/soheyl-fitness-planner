@@ -2,7 +2,8 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-reac
 import { ChefHat, LogIn, Star, X } from 'lucide-react'
 import { type FC, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router'
-import { cn, FAVORITABLE_ROUTES, MAX_FAVORITES, useScrollLock } from '~/lib'
+import { cn, FAVORITABLE_ROUTES, MAX_FAVORITES, useDirection, useScrollLock, useTranslation } from '~/lib'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export interface MobileMenuDrawerProps {
 	open: boolean
@@ -36,20 +37,28 @@ export const MobileMenuDrawer: FC<MobileMenuDrawerProps> = ({ open, onClose, isF
 
 const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavorite, onToggleFavorite }) => {
 	useScrollLock()
+	const { t } = useTranslation()
+	const dir = useDirection()
 	return (
 		<div
 			id="mobile-menu-drawer"
 			className="fixed inset-0 z-[60] md:hidden"
 			role="dialog"
 			aria-modal="true"
-			aria-label="Menu"
+			aria-label={t('common.menu')}
+			dir={dir}
 		>
-			<button type="button" className="absolute inset-0 bg-black/50" aria-label="Close menu" onClick={onClose} />
-			<div className="absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col border-edge border-l bg-surface-1">
+			<button
+				type="button"
+				className="absolute inset-0 bg-black/50"
+				aria-label={t('common.closeMenu')}
+				onClick={onClose}
+			/>
+			<div className="absolute end-0 top-0 flex h-full w-[85%] max-w-sm flex-col border-edge border-s bg-surface-1">
 				<header className="flex items-center justify-between border-edge border-b px-4 py-3">
 					<div className="flex items-center gap-2 font-semibold text-accent">
 						<ChefHat className="size-5" />
-						<span className="tracking-tight">macromaxxing</span>
+						<span className="tracking-tight">Soheyl Fitness</span>
 					</div>
 					<div className="flex items-center gap-2">
 						<SignedIn>
@@ -62,14 +71,14 @@ const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavori
 									className="flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-ink-muted text-sm transition-colors hover:text-ink"
 								>
 									<LogIn className="size-4" />
-									Sign in
+									{t('common.signIn')}
 								</button>
 							</SignInButton>
 						</SignedOut>
 						<button
 							type="button"
 							onClick={onClose}
-							aria-label="Close menu"
+							aria-label={t('common.closeMenu')}
 							className="rounded-sm p-1.5 text-ink-muted transition-colors hover:text-ink"
 						>
 							<X className="size-5" />
@@ -77,9 +86,14 @@ const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavori
 					</div>
 				</header>
 
+				<div className="border-edge border-b px-4 py-2.5">
+					<LanguageSwitcher />
+				</div>
+
 				<nav className="flex-1 overflow-y-auto py-2">
 					<SignedIn>
-						{FAVORITABLE_ROUTES.map(({ to, label, icon: Icon, end }) => {
+						{FAVORITABLE_ROUTES.map(({ to, labelKey, emoji, end }) => {
+							const label = t(labelKey)
 							const starred = isFavorite(to)
 							return (
 								<div key={to} className="flex items-stretch">
@@ -88,14 +102,16 @@ const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavori
 										end={end}
 										className="flex flex-1 items-center gap-3 px-4 py-3 current:font-medium current:text-accent text-ink-muted transition-colors hover:text-ink"
 									>
-										<Icon className="size-5" />
+										<span className="text-lg leading-none">{emoji}</span>
 										<span>{label}</span>
 									</NavLink>
 									<button
 										type="button"
 										onClick={() => onToggleFavorite(to)}
 										aria-label={
-											starred ? `Unpin ${label} from bottom bar` : `Pin ${label} to bottom bar`
+											starred
+												? t('nav.unpinFromBottomBar', { label })
+												: t('nav.pinToBottomBar', { label })
 										}
 										aria-pressed={starred}
 										className={cn(
@@ -108,23 +124,19 @@ const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavori
 								</div>
 							)
 						})}
-						<p className="px-4 py-3 text-ink-faint text-xs">
-							Pin up to {MAX_FAVORITES} to the bottom bar. Picking a 5th replaces the oldest.
-						</p>
+						<p className="px-4 py-3 text-ink-faint text-xs">{t('nav.pinHint', { max: MAX_FAVORITES })}</p>
 					</SignedIn>
 					<SignedOut>
-						{FAVORITABLE_ROUTES.filter(r => r.to === '/recipes' || r.to === '/ingredients').map(
-							({ to, label, icon: Icon }) => (
-								<NavLink
-									key={to}
-									to={to}
-									className="flex items-center gap-3 px-4 py-3 current:font-medium current:text-accent text-ink-muted transition-colors hover:text-ink"
-								>
-									<Icon className="size-5" />
-									<span>{label}</span>
-								</NavLink>
-							)
-						)}
+						{FAVORITABLE_ROUTES.filter(r => r.public).map(({ to, labelKey, emoji }) => (
+							<NavLink
+								key={to}
+								to={to}
+								className="flex items-center gap-3 px-4 py-3 current:font-medium current:text-accent text-ink-muted transition-colors hover:text-ink"
+							>
+								<span className="text-lg leading-none">{emoji}</span>
+								<span>{t(labelKey)}</span>
+							</NavLink>
+						))}
 					</SignedOut>
 				</nav>
 			</div>

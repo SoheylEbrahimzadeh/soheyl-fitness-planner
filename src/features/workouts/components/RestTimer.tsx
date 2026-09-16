@@ -123,7 +123,7 @@ export const RestTimer: FC = () => {
 				</button>
 				<button
 					type="button"
-					className="pr-1.5 text-ink-faint text-xs hover:text-ink"
+					className="pe-1.5 text-ink-faint text-xs hover:text-ink"
 					aria-label="Dismiss session timer"
 					onClick={dismissSession}
 				>

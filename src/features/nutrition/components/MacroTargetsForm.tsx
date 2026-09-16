@@ -163,7 +163,7 @@ export const MacroTargetsForm: FC = () => {
 					<span className="text-ink-muted">
 						{startCase(resolvedActivity)} ({ACTIVITY_MULTIPLIER[resolvedActivity]})
 					</span>
-					. Pick a level by hand if you also train outside Macromaxxing.
+					. Pick a level by hand if you also train outside Soheyl Fitness.
 				</p>
 			)}
 

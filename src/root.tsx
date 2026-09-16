@@ -6,7 +6,7 @@ import { Links, Meta, Scripts, ScrollRestoration } from 'react-router'
 import { ErrorBoundary as AppErrorBoundary } from '~/components/ErrorBoundary'
 import { RootLayout } from '~/components/layout/RootLayout'
 import { AppLoader } from '~/components/ui'
-import { UserProvider } from '~/lib'
+import { LanguageProvider, UserProvider } from '~/lib'
 import { queryClient, trpc, trpcClient } from '~/lib/trpc'
 import '@mdxeditor/editor/style.css'
 import '~/index.css'
@@ -19,7 +19,7 @@ interface LayoutProps {
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
 	return (
-		<html lang="en">
+		<html lang="fa" dir="rtl">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta
@@ -38,9 +38,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 				<link
 					rel="stylesheet"
-					href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+					href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700;800&display=swap"
 				/>
-				<title>Macromaxxing</title>
+				<title>Soheyl Fitness</title>
 			</head>
 			<body>
 				<div id="root">
@@ -51,7 +51,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 					>
 						<trpc.Provider client={trpcClient} queryClient={queryClient}>
 							<QueryClientProvider client={queryClient}>
-								<UserProvider>{children}</UserProvider>
+								<LanguageProvider>
+									<UserProvider>{children}</UserProvider>
+								</LanguageProvider>
 							</QueryClientProvider>
 						</trpc.Provider>
 					</ClerkProvider>

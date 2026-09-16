@@ -1,38 +1,31 @@
-import {
-	BarChart3,
-	BicepsFlexed,
-	CalendarDays,
-	CookingPot,
-	Dumbbell,
-	Home,
-	type LucideIcon,
-	Settings,
-	UtensilsCrossed
-} from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
 export interface FavoritableRoute {
 	to: string
-	label: string
-	icon: LucideIcon
+	/** Dot path into the i18n Dictionary's `nav` section, e.g. "nav.dashboard". */
+	labelKey: string
+	/** Emoji glyph rendered as the nav icon — see CLAUDE.md Navigation section. */
+	emoji: string
 	end?: boolean
+	/** Shown to signed-out visitors too (top nav + bottom bar). */
+	public?: boolean
 }
 
-/** Canonical order — drives both the menu list and the bottom-bar render order. */
+/** Canonical order — drives the top nav, the menu drawer, and the bottom-bar render order. */
 export const FAVORITABLE_ROUTES: readonly FavoritableRoute[] = [
-	{ to: '/', label: 'Home', icon: Home, end: true },
-	{ to: '/recipes', label: 'Recipes', icon: CookingPot },
-	{ to: '/ingredients', label: 'Ingredients', icon: UtensilsCrossed },
-	{ to: '/plans', label: 'Plans', icon: CalendarDays },
-	{ to: '/workouts', label: 'Workouts', icon: Dumbbell },
-	{ to: '/exercises', label: 'Exercises', icon: BicepsFlexed },
-	{ to: '/analytics', label: 'Analytics', icon: BarChart3 },
-	{ to: '/settings', label: 'Settings', icon: Settings }
+	{ to: '/', labelKey: 'nav.dashboard', emoji: '🏠', end: true },
+	{ to: '/plans', labelKey: 'nav.myPlan', emoji: '📋' },
+	{ to: '/recipes', labelKey: 'nav.mealPlan', emoji: '🍽️', public: true },
+	{ to: '/workouts', labelKey: 'nav.workoutPlan', emoji: '🏋️' },
+	{ to: '/shopping-list', labelKey: 'nav.shoppingList', emoji: '🛒' },
+	{ to: '/budget', labelKey: 'nav.budget', emoji: '💰' },
+	{ to: '/analytics', labelKey: 'nav.progress', emoji: '📊' },
+	{ to: '/settings', labelKey: 'nav.settings', emoji: '⚙️' }
 ]
 
 export const MAX_FAVORITES = 4
 export const STORAGE_KEY = 'macromaxxing:bottomNavFavorites'
-export const DEFAULT_FAVORITES: string[] = ['/recipes', '/ingredients', '/plans', '/workouts']
+export const DEFAULT_FAVORITES: string[] = ['/', '/recipes', '/workouts', '/analytics']
 
 const KNOWN_ROUTES = new Set<string>(FAVORITABLE_ROUTES.map(r => r.to))
 

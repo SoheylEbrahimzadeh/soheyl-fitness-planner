@@ -47,7 +47,7 @@ export function isValidBarcode(value: string): boolean {
 export async function lookupBarcode(barcode: string): Promise<OFFLookupResult> {
 	const fields = 'product_name,brands,nutriments,serving_size,serving_quantity,serving_quantity_unit,product_quantity'
 	const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=${fields}`, {
-		headers: { 'User-Agent': 'Macromaxxing/1.0 (https://github.com/hyldmo/macromaxxing)' }
+		headers: { 'User-Agent': 'SoheylFitness/1.0 (https://github.com/SoheylEbrahimzadeh/soheyl-fitness-planner)' }
 	})
 
 	if (!res.ok) throw new Error(`Open Food Facts request failed (${res.status})`)

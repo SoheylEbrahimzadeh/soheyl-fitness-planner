@@ -184,7 +184,7 @@ export const aiRouter = router({
 			// Step 1: If URL, fetch the page and try JSON-LD extraction
 			if (input.url) {
 				const response = await fetch(input.url, {
-					headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Macromaxxing/1.0)' }
+					headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SoheylFitness/1.0)' }
 				})
 				if (!response.ok) {
 					throw new TRPCError({
@@ -257,7 +257,7 @@ export const aiRouter = router({
 
 	parseProduct: protectedProcedure.input(z.object({ url: z.string().url() })).mutation(async ({ ctx, input }) => {
 		const response = await fetch(input.url, {
-			headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Macromaxxing/1.0)' }
+			headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SoheylFitness/1.0)' }
 		})
 		if (!response.ok) {
 			throw new TRPCError({

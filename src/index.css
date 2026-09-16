@@ -48,7 +48,9 @@
 	--radius-sm: 0px;
 	--radius-md: 0px;
 
-	/* Font */
+	/* Font — Vazirmatn is the primary UI face (Persian + Latin); JetBrains Mono stays for
+	   tabular numeric readouts (macros, weights, timers). */
+	--font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
 	--font-mono:
 		"JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono",
 		monospace;
@@ -83,6 +85,7 @@
 body {
 	background-color: var(--color-surface-0);
 	color: var(--color-ink);
+	font-family: var(--font-sans);
 	font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 

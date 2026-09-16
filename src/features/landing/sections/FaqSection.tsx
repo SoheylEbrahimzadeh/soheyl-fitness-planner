@@ -18,14 +18,14 @@ const FAQ_ITEMS: Array<{ q: string; a: ReactNode }> = [
 		q: 'Is the source code available?',
 		a: (
 			<>
-				Yes. Macromaxxing is open source. Read the code, file an issue, or send a PR at{' '}
+				Yes. Soheyl Fitness is open source. Read the code, file an issue, or send a PR at{' '}
 				<a
-					href="https://github.com/hyldmo/macromaxxing"
+					href="https://github.com/SoheylEbrahimzadeh/soheyl-fitness-planner"
 					target="_blank"
 					rel="noreferrer"
 					className="font-mono text-accent underline underline-offset-2 hover:text-ink"
 				>
-					github.com/hyldmo/macromaxxing
+					github.com/SoheylEbrahimzadeh/soheyl-fitness-planner
 				</a>
 				. Self-host it if you want.
 			</>

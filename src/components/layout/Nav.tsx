@@ -1,46 +1,21 @@
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react'
-import {
-	BarChart3,
-	BicepsFlexed,
-	CalendarDays,
-	ChefHat,
-	CookingPot,
-	Dumbbell,
-	LogIn,
-	type LucideIcon,
-	Menu,
-	Settings,
-	UtensilsCrossed
-} from 'lucide-react'
+import { ChefHat, LogIn, type LucideIcon, Menu } from 'lucide-react'
 import { type FC, type HTMLAttributes, useCallback, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
 import { Button } from '~/components/ui/Button'
 import { OfflineIndicator } from '~/components/ui/OfflineIndicator'
 import { RestTimer } from '~/features/workouts/components/RestTimer'
 import { useWorkoutSessionStore } from '~/features/workouts/store'
-import { cn, FAVORITABLE_ROUTES, useBottomNavFavorites } from '~/lib'
+import { cn, FAVORITABLE_ROUTES, type FavoritableRoute, useBottomNavFavorites, useDirection, useTranslation } from '~/lib'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileMenuDrawer } from './MobileMenuDrawer'
 
-const publicLinks = [
-	{ to: '/recipes', label: 'Recipes', icon: CookingPot },
-	{ to: '/ingredients', label: 'Ingredients', icon: UtensilsCrossed }
-] satisfies Link[]
-
-const desktopAuthLinks = [
-	{ to: '/plans', label: 'Plans', icon: CalendarDays },
-	{ to: '/workouts', label: 'Workouts', icon: Dumbbell },
-	{ to: '/exercises', label: 'Exercises', icon: BicepsFlexed },
-	{ to: '/analytics', label: 'Analytics', icon: BarChart3 }
-] satisfies Link[]
-
-export interface Link {
-	to: string
-	label: string
-	icon: LucideIcon
-	end?: boolean
-}
+const publicLinks = FAVORITABLE_ROUTES.filter(r => r.public)
+const authOnlyLinks = FAVORITABLE_ROUTES.filter(r => !r.public)
 
 export function Nav() {
+	const { t } = useTranslation()
+	const dir = useDirection()
 	const timerActive = useWorkoutSessionStore(s => s.sessionStartedAt !== null)
 	const { favorites, isFavorite, toggle } = useBottomNavFavorites()
 	const [menuOpen, setMenuOpen] = useState(false)
@@ -52,47 +27,42 @@ export function Nav() {
 	}, [timerActive, closeMenu])
 
 	// Bottom bar = canonical order filtered by favorites.
-	const mobileFavLinks: Link[] = FAVORITABLE_ROUTES.filter(r => favorites.includes(r.to)).map(r => ({
-		to: r.to,
-		label: r.label,
-		icon: r.icon,
-		end: r.end
-	}))
+	const mobileFavLinks: FavoritableRoute[] = FAVORITABLE_ROUTES.filter(r => favorites.includes(r.to))
 
 	return (
 		<>
 			{/* Top nav (desktop full, mobile collapsed to brand + status + hamburger) */}
-			<nav className="sticky top-0 z-50 border-edge border-b bg-surface-1">
-				<div className="mx-auto flex h-12 max-w-8xl items-center gap-6 px-3 md:px-4">
+			<nav className="sticky top-0 z-50 border-edge border-b bg-surface-1" dir={dir}>
+				<div className="mx-auto flex h-12 max-w-8xl items-center gap-4 px-3 md:px-4">
 					<NavLink to="/" className="flex items-center gap-2 font-semibold text-accent">
 						<ChefHat className="size-5" />
-						<span className="tracking-tight">macromaxxing</span>
+						<span className="tracking-tight">Soheyl Fitness</span>
 					</NavLink>
-					<div className="hidden flex-1 md:flex">
-						{publicLinks.map(props => (
-							<WebLink key={props.to} {...props} />
+					<div className="hidden flex-1 items-center md:flex">
+						{publicLinks.map(({ labelKey, ...props }) => (
+							<WebLink key={props.to} {...props} label={t(labelKey)} />
 						))}
 						<SignedIn>
-							{desktopAuthLinks.map(props => (
-								<WebLink key={props.to} {...props} />
+							{authOnlyLinks.map(({ labelKey, ...props }) => (
+								<WebLink key={props.to} {...props} label={t(labelKey)} />
 							))}
 						</SignedIn>
 					</div>
-					<div className="ml-auto flex items-center gap-2">
+					<div className="ms-auto flex items-center gap-2">
+						<LanguageSwitcher className="hidden md:flex" />
 						<OfflineIndicator />
 						<RestTimer />
-						{/* Desktop-only: settings + avatar inline. */}
+						{/* Desktop-only: avatar / auth actions. */}
 						<div className="hidden items-center gap-2 md:flex">
 							<SignedIn>
-								<WebLink to="/settings" icon={Settings} />
 								<UserButton />
 							</SignedIn>
 							<SignedOut>
 								<SignUpButton mode="modal">
-									<Button>Sign up</Button>
+									<Button>{t('common.signUp')}</Button>
 								</SignUpButton>
 								<SignInButton mode="modal">
-									<WebLink icon={LogIn} label="Sign in" />
+									<WebLink icon={LogIn} label={t('common.signIn')} />
 								</SignInButton>
 							</SignedOut>
 						</div>
@@ -101,7 +71,7 @@ export function Nav() {
 							<button
 								type="button"
 								onClick={() => setMenuOpen(true)}
-								aria-label="Open menu"
+								aria-label={t('common.openMenu')}
 								aria-expanded={menuOpen}
 								aria-controls="mobile-menu-drawer"
 								className={cn(
@@ -114,12 +84,12 @@ export function Nav() {
 						</SignedIn>
 						<SignedOut>
 							<SignUpButton mode="modal">
-								<Button className="md:hidden">Sign up</Button>
+								<Button className="md:hidden">{t('common.signUp')}</Button>
 							</SignUpButton>
 							<SignInButton mode="modal">
 								<button
 									type="button"
-									aria-label="Sign in"
+									aria-label={t('common.signIn')}
 									className="rounded-sm p-1.5 text-ink-muted transition-colors hover:text-ink md:hidden"
 								>
 									<LogIn className="size-5" />
@@ -136,7 +106,10 @@ export function Nav() {
 			    up the screen and drifts with the scroll. Promoting it to its own compositing
 			    layer hands positioning to the compositor and sidesteps the broken paint path.
 			    Don't remove it without testing a long scroll on a real iOS device. */}
-			<nav className="fixed right-0 bottom-0 left-0 z-50 transform-gpu border-edge border-t bg-surface-1 md:hidden">
+			<nav
+				className="fixed right-0 bottom-0 left-0 z-50 transform-gpu border-edge border-t bg-surface-1 md:hidden"
+				dir={dir}
+			>
 				<div className="grid auto-cols-fr grid-flow-col justify-center px-3 2xs:py-1">
 					<SignedIn>
 						<AppLinks links={mobileFavLinks} />
@@ -144,7 +117,7 @@ export function Nav() {
 					<SignedOut>
 						<AppLinks links={publicLinks} />
 						<SignInButton mode="modal">
-							<AppLink icon={LogIn} label="Sign in" />
+							<AppLink icon={LogIn} label={t('common.signIn')} />
 						</SignInButton>
 					</SignedOut>
 				</div>
@@ -159,11 +132,13 @@ interface LinkProps {
 	className?: string
 	to?: string | (() => void)
 	label?: string
-	icon: LucideIcon
+	/** Emoji glyph — used for real nav items. Utility auth actions fall back to `icon`. */
+	emoji?: string
+	icon?: LucideIcon
 	end?: boolean
 }
 
-const WebLink: FC<LinkProps> = ({ to, label, icon: Icon, className, end, ...rest }) => {
+const WebLink: FC<LinkProps> = ({ to, label, emoji, icon: Icon, className, end, ...rest }) => {
 	const Elem =
 		typeof to === 'string'
 			? (props: HTMLAttributes<HTMLAnchorElement>) => <NavLink to={to} end={end} {...props} />
@@ -176,13 +151,17 @@ const WebLink: FC<LinkProps> = ({ to, label, icon: Icon, className, end, ...rest
 				className
 			)}
 		>
-			<Icon className="size-5" />
-			<span className="group-hover:inline max-md:hidden">{label}</span>
+			{emoji ? (
+				<span className="text-base leading-none">{emoji}</span>
+			) : Icon ? (
+				<Icon className="size-5" />
+			) : null}
+			<span className="group-hover:inline max-lg:hidden">{label}</span>
 		</Elem>
 	)
 }
 
-const AppLink: FC<LinkProps> = ({ to, label, icon: Icon, className, end, ...rest }) => {
+const AppLink: FC<LinkProps> = ({ to, label, emoji, icon: Icon, className, end, ...rest }) => {
 	const Elem =
 		typeof to === 'string'
 			? (props: HTMLAttributes<HTMLAnchorElement>) => <NavLink to={to} end={end} {...props} />
@@ -195,10 +174,17 @@ const AppLink: FC<LinkProps> = ({ to, label, icon: Icon, className, end, ...rest
 				className
 			)}
 		>
-			<Icon className="mx-auto 2xs:size-6 size-5" />
+			{emoji ? (
+				<span className="block 2xs:text-xl text-lg leading-none">{emoji}</span>
+			) : Icon ? (
+				<Icon className="mx-auto 2xs:size-6 size-5" />
+			) : null}
 			<div>{label}</div>
 		</Elem>
 	)
 }
 
-const AppLinks: FC<{ links: Link[] }> = ({ links }) => links.map(link => <AppLink key={link.to} {...link} />)
+const AppLinks: FC<{ links: readonly FavoritableRoute[] }> = ({ links }) => {
+	const { t } = useTranslation()
+	return links.map(({ labelKey, ...link }) => <AppLink key={link.to} {...link} label={t(labelKey)} />)
+}

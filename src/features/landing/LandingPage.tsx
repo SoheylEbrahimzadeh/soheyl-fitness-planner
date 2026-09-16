@@ -15,7 +15,7 @@ import {
 } from './sections'
 
 export const LandingPage: FC = () => {
-	useDocumentTitle('Macromaxxing — precision log for meal prep & training')
+	useDocumentTitle('Soheyl Fitness — precision log for meal prep & training')
 
 	return (
 		<div className="-mx-4 -mt-4 bg-surface-0 font-display text-ink antialiased">

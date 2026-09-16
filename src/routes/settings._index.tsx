@@ -241,7 +241,7 @@ export default function SettingsPage() {
 // so only a real tag gets linked — a /releases/tag/dev URL would 404.
 const VersionFooter: FC = () => {
 	const version = import.meta.env.VITE_APP_VERSION
-	const label = `§ Macromaxxing ${version}`
+	const label = `§ Soheyl Fitness ${version}`
 
 	return (
 		<p className="pt-2 text-center font-mono text-ink-faint text-xs">

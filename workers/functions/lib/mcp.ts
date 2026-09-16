@@ -105,7 +105,7 @@ export async function handleMcpRequest(
 
 	// One resource serves every UI tool; the host fetches it via `resources/read` when it renders a
 	// UI tool. Registered per-request (cheap) on the stateless server.
-	registerAppResource(server, 'Macromaxxing widgets', WIDGETS_UI, { mimeType: RESOURCE_MIME_TYPE }, async () => ({
+	registerAppResource(server, 'Soheyl Fitness widgets', WIDGETS_UI, { mimeType: RESOURCE_MIME_TYPE }, async () => ({
 		contents: [{ uri: WIDGETS_UI, mimeType: RESOURCE_MIME_TYPE, text: WIDGET_HTML }]
 	}))
 

@@ -30,7 +30,14 @@ export const trpcClient = trpc.createClient({
 		httpBatchLink({
 			url: '/api/trpc',
 			fetch(url, options) {
-				return fetch(url, { ...options, credentials: 'include' })
+				// Dev-only: pairs with the X-Dev-User-Email fallback in workers/functions/lib/auth.ts,
+				// which only activates when the request originates from 127.0.0.1 (local wrangler dev).
+				// import.meta.env.DEV is false in production builds, so this never ships.
+				const headers = new Headers(options?.headers)
+				if (import.meta.env.DEV) {
+					headers.set('X-Dev-User-Email', 'soheyl@dev.local')
+				}
+				return fetch(url, { ...options, headers, credentials: 'include' })
 			}
 		})
 	]

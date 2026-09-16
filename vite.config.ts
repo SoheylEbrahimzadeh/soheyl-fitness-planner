@@ -46,8 +46,8 @@ export default defineConfig({
 		VitePWA({
 			registerType: 'prompt',
 			manifest: {
-				name: 'Macromaxxing',
-				short_name: 'Macromaxxing',
+				name: 'Soheyl Fitness',
+				short_name: 'Soheyl Fitness',
 				description: 'Recipe nutrition tracker for meal preppers',
 				theme_color: '#1f1d1b',
 				background_color: '#1f1d1b',

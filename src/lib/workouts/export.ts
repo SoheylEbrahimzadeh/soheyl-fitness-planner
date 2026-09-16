@@ -106,7 +106,7 @@ export function formatAdjustTargetsPrompt(workout: Workout): string {
 	const lines: string[] = []
 
 	lines.push(
-		`Review my "${workout.name}" workout template and tell me whether its target sets/reps/weight should be updated based on my recent training history. Use the Macromaxxing MCP tools — don't guess from intuition.`
+		`Review my "${workout.name}" workout template and tell me whether its target sets/reps/weight should be updated based on my recent training history. Use the Soheyl Fitness MCP tools — don't guess from intuition.`
 	)
 	lines.push('')
 	lines.push(`Template id: ${workout.id}`)

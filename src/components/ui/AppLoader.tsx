@@ -63,6 +63,6 @@ export const AppLoader: FC = () => (
 				/>
 			))}
 		</svg>
-		<div className="font-display text-ink-faint text-lg">Macromaxxing</div>
+		<div className="font-display text-ink-faint text-lg">Soheyl Fitness</div>
 	</div>
 )
