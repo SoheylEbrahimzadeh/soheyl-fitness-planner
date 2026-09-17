@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react'
-import { ChefHat, LogIn, type LucideIcon, Menu } from 'lucide-react'
+import { Dumbbell, LogIn, type LucideIcon, Menu } from 'lucide-react'
 import { type FC, type HTMLAttributes, useCallback, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
 import { Button } from '~/components/ui/Button'
@@ -42,7 +42,7 @@ export function Nav() {
 			<nav className="sticky top-0 z-50 border-edge border-b bg-surface-1" dir={dir}>
 				<div className="mx-auto flex h-12 max-w-8xl items-center gap-4 px-3 md:px-4">
 					<NavLink to="/" className="flex items-center gap-2 font-semibold text-accent">
-						<ChefHat className="size-5" />
+						<Dumbbell className="size-5" />
 						<span className="tracking-tight">Soheyl Fitness</span>
 					</NavLink>
 					<div className="hidden flex-1 items-center md:flex">
