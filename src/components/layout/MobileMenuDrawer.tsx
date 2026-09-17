@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
-import { ChefHat, LogIn, Star, X } from 'lucide-react'
+import { Dumbbell, LogIn, Star, X } from 'lucide-react'
 import { type FC, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router'
 import { cn, FAVORITABLE_ROUTES, MAX_FAVORITES, useDirection, useScrollLock, useTranslation } from '~/lib'
@@ -57,7 +57,7 @@ const DrawerBody: FC<Omit<MobileMenuDrawerProps, 'open'>> = ({ onClose, isFavori
 			<div className="absolute end-0 top-0 flex h-full w-[85%] max-w-sm flex-col border-edge border-s bg-surface-1">
 				<header className="flex items-center justify-between border-edge border-b px-4 py-3">
 					<div className="flex items-center gap-2 font-semibold text-accent">
-						<ChefHat className="size-5" />
+						<Dumbbell className="size-5" />
 						<span className="tracking-tight">Soheyl Fitness</span>
 					</div>
 					<div className="flex items-center gap-2">
