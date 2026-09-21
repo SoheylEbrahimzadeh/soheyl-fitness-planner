@@ -1,6 +1,49 @@
 import type { Dictionary } from '../types'
 
 export const fa: Dictionary = {
+	enums: {
+		setType: {
+			warmup: 'گرم‌کردنی',
+			working: 'کاری',
+			backoff: 'بک‌آف'
+		},
+		setMode: {
+			warmup: 'گرم‌کردنی',
+			working: 'کاری',
+			backoff: 'بک‌آف',
+			full: 'کامل'
+		},
+		trainingGoal: {
+			default: 'پیش‌فرض',
+			hypertrophy: 'حجم',
+			strength: 'قدرت'
+		},
+		muscleGroup: {
+			chest: 'سینه',
+			upper_back: 'بالای پشت',
+			lats: 'زیربغل',
+			front_delts: 'دلتوئید جلو',
+			side_delts: 'دلتوئید کناری',
+			rear_delts: 'دلتوئید پشت',
+			biceps: 'دوسر',
+			triceps: 'سه‌سر',
+			forearms: 'ساعد',
+			quads: 'چهارسر ران',
+			hamstrings: 'همسترینگ',
+			glutes: 'باسن',
+			calves: 'ساق پا',
+			core: 'مرکز بدن'
+		},
+		exerciseMetric: {
+			e1rm: 'e1RM',
+			volume: 'حجم',
+			weight: 'ست برتر'
+		},
+		exerciseType: {
+			compound: 'ترکیبی',
+			isolation: 'تک‌مفصلی'
+		}
+	},
 	common: {
 		signUp: 'ثبت‌نام',
 		signIn: 'ورود',

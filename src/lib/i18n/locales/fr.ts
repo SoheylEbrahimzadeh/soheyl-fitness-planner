@@ -1,6 +1,49 @@
 import type { Dictionary } from '../types'
 
 export const fr: Dictionary = {
+	enums: {
+		setType: {
+			warmup: 'Échauffement',
+			working: 'Travail',
+			backoff: 'Dégressive'
+		},
+		setMode: {
+			warmup: 'Échauffement',
+			working: 'Travail',
+			backoff: 'Dégressive',
+			full: 'Complète'
+		},
+		trainingGoal: {
+			default: 'Par défaut',
+			hypertrophy: 'Hypertrophie',
+			strength: 'Force'
+		},
+		muscleGroup: {
+			chest: 'Pectoraux',
+			upper_back: 'Haut du dos',
+			lats: 'Grand dorsal',
+			front_delts: 'Deltoïdes avant',
+			side_delts: 'Deltoïdes latéraux',
+			rear_delts: 'Deltoïdes arrière',
+			biceps: 'Biceps',
+			triceps: 'Triceps',
+			forearms: 'Avant-bras',
+			quads: 'Quadriceps',
+			hamstrings: 'Ischio-jambiers',
+			glutes: 'Fessiers',
+			calves: 'Mollets',
+			core: 'Gainage'
+		},
+		exerciseMetric: {
+			e1rm: 'e1RM',
+			volume: 'Volume',
+			weight: 'Série de tête'
+		},
+		exerciseType: {
+			compound: 'Composé',
+			isolation: 'Isolation'
+		}
+	},
 	common: {
 		signUp: "S'inscrire",
 		signIn: 'Se connecter',

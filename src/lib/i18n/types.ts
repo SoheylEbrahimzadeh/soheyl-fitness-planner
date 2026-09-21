@@ -15,6 +15,36 @@ export const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 ]
 
 export interface Dictionary {
+	/** Shared display labels for domain enums (SetType, SetMode, TrainingGoal, MuscleGroup, ExerciseMetric, Exercise['type']). */
+	enums: {
+		setType: Record<'warmup' | 'working' | 'backoff', string>
+		setMode: Record<'warmup' | 'working' | 'backoff' | 'full', string>
+		trainingGoal: {
+			/** The "no override" / dash state in TrainingGoalToggle — not a real TrainingGoal value. */
+			default: string
+			hypertrophy: string
+			strength: string
+		}
+		muscleGroup: Record<
+			| 'chest'
+			| 'upper_back'
+			| 'lats'
+			| 'front_delts'
+			| 'side_delts'
+			| 'rear_delts'
+			| 'biceps'
+			| 'triceps'
+			| 'forearms'
+			| 'quads'
+			| 'hamstrings'
+			| 'glutes'
+			| 'calves'
+			| 'core',
+			string
+		>
+		exerciseMetric: Record<'e1rm' | 'volume' | 'weight', string>
+		exerciseType: Record<'compound' | 'isolation', string>
+	}
 	common: {
 		signUp: string
 		signIn: string

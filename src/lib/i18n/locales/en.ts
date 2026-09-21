@@ -1,6 +1,49 @@
 import type { Dictionary } from '../types'
 
 export const en: Dictionary = {
+	enums: {
+		setType: {
+			warmup: 'Warmup',
+			working: 'Working',
+			backoff: 'Backoff'
+		},
+		setMode: {
+			warmup: 'Warmup',
+			working: 'Working',
+			backoff: 'Backoff',
+			full: 'Full'
+		},
+		trainingGoal: {
+			default: 'Default',
+			hypertrophy: 'Hypertrophy',
+			strength: 'Strength'
+		},
+		muscleGroup: {
+			chest: 'Chest',
+			upper_back: 'Upper Back',
+			lats: 'Lats',
+			front_delts: 'Front Delts',
+			side_delts: 'Side Delts',
+			rear_delts: 'Rear Delts',
+			biceps: 'Biceps',
+			triceps: 'Triceps',
+			forearms: 'Forearms',
+			quads: 'Quads',
+			hamstrings: 'Hamstrings',
+			glutes: 'Glutes',
+			calves: 'Calves',
+			core: 'Core'
+		},
+		exerciseMetric: {
+			e1rm: 'e1RM',
+			volume: 'Volume',
+			weight: 'Top set'
+		},
+		exerciseType: {
+			compound: 'Compound',
+			isolation: 'Isolation'
+		}
+	},
 	common: {
 		signUp: 'Sign up',
 		signIn: 'Sign in',
