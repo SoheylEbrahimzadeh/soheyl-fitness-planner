@@ -103,7 +103,8 @@ export const relations = defineRelations(schema, r => ({
 			to: r.users.id,
 			optional: false
 		}),
-		inventory: r.many.mealPlanInventory()
+		inventory: r.many.mealPlanInventory(),
+		groceryChecks: r.many.mealPlanGroceryChecks()
 	},
 
 	mealPlanInventory: {
@@ -124,6 +125,19 @@ export const relations = defineRelations(schema, r => ({
 		inventory: r.one.mealPlanInventory({
 			from: r.mealPlanSlots.inventoryId,
 			to: r.mealPlanInventory.id,
+			optional: false
+		})
+	},
+
+	mealPlanGroceryChecks: {
+		mealPlan: r.one.mealPlans({
+			from: r.mealPlanGroceryChecks.mealPlanId,
+			to: r.mealPlans.id,
+			optional: false
+		}),
+		ingredient: r.one.ingredients({
+			from: r.mealPlanGroceryChecks.ingredientId,
+			to: r.ingredients.id,
 			optional: false
 		})
 	},

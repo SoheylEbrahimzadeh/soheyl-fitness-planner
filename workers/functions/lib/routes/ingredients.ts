@@ -182,6 +182,237 @@ const updateUnitSchema = z.object({
 	isDefault: z.boolean().optional()
 })
 
+/**
+ * Batch find or create multiple ingredients — single AI call for all unknowns. Extracted from the
+ * `batchFindOrCreate` procedure so `meal-plan-generator.ts` can resolve a whole week's worth of
+ * AI-generated ingredient names the same way, in one call, instead of a parallel implementation.
+ */
+export async function batchFindOrCreateIngredients(
+	ctx: {
+		db: TRPCContext['db']
+		user: { id: string }
+		env: { USDA_API_KEY?: string; ENCRYPTION_SECRET?: string }
+	},
+	names: string[]
+) {
+	const normalizedNames = names.map(normalizeIngredientName)
+	// 1. DB lookup all (case-insensitive)
+	const existingAll = await ctx.db.query.ingredients.findMany({
+		where: {
+			RAW: t =>
+				inArray(
+					sql`lower(${t.name})`,
+					normalizedNames.map(n => n.toLowerCase())
+				)
+		},
+		with: { units: true }
+	})
+	const existingMap = new Map(existingAll.map(e => [e.name.toLowerCase(), e]))
+
+	type ResultItem = { ingredient: (typeof existingAll)[number]; source: 'existing' | 'usda' | 'ai' }
+	const results: (ResultItem | null)[] = normalizedNames.map(name => {
+		const existing = existingMap.get(name.toLowerCase())
+		return existing ? { ingredient: existing, source: 'existing' } : null
+	})
+
+	// Collect names that need lookup
+	const missingIndices = results.map((r, i) => (r === null ? i : -1)).filter(i => i !== -1)
+	if (missingIndices.length === 0) return results as ResultItem[]
+
+	// 2. Resolve USDA data (local exact match first, then API for remaining)
+	const usdaResults = new Map<
+		number,
+		{ macros: { protein: number; carbs: number; fat: number; kcal: number; fiber: number }; fdcId: number }
+	>()
+	const usdaPortionsMap = new Map<number, Awaited<ReturnType<typeof fetchUsdaPortions>>>()
+
+	// 2a. Local USDA exact match (parallel)
+	const localLookups = await Promise.all(
+		missingIndices.map(async idx => {
+			const result = await lookupLocalUSDA(ctx.db, normalizedNames[idx])
+			return { idx, result }
+		})
+	)
+
+	const localPortionLookups = await Promise.all(
+		localLookups
+			.filter(l => l.result !== null)
+			.map(async ({ idx, result }) => {
+				const { fdcId, description: _, ...macros } = result!
+				usdaResults.set(idx, { macros, fdcId })
+				const portions = await fetchLocalUsdaPortions(ctx.db, fdcId)
+				return { idx, portions }
+			})
+	)
+	for (const { idx, portions } of localPortionLookups) {
+		usdaPortionsMap.set(idx, portions)
+	}
+
+	// 2b. USDA API for items not found locally (parallel)
+	const usdaKey = ctx.env.USDA_API_KEY
+	const needsApiLookup = missingIndices.filter(i => !usdaResults.has(i))
+
+	if (usdaKey && needsApiLookup.length > 0) {
+		const usdaLookups = await Promise.all(
+			needsApiLookup.map(async idx => {
+				const result = await lookupUSDA(normalizedNames[idx], usdaKey)
+				return { idx, result }
+			})
+		)
+		for (const { idx, result } of usdaLookups) {
+			if (result) {
+				const { fdcId, ...macros } = result
+				usdaResults.set(idx, { macros, fdcId })
+			}
+		}
+	}
+
+	// 2c. Fetch USDA API portions for API-found items (parallel)
+	const needsApiPortions = Array.from(usdaResults.entries()).filter(([idx]) => !usdaPortionsMap.has(idx))
+	if (usdaKey && needsApiPortions.length > 0) {
+		const portionLookups = await Promise.all(
+			needsApiPortions.map(async ([idx, { fdcId }]) => {
+				const portions = await fetchUsdaPortions(fdcId, usdaKey)
+				return { idx, portions }
+			})
+		)
+		for (const { idx, portions } of portionLookups) {
+			usdaPortionsMap.set(idx, portions)
+		}
+	}
+
+	// 4. Collect AI needs
+	// - USDA found but needs density/units enrichment
+	// - Not in USDA at all
+	const needsAiEnrichment: { idx: number; name: string }[] = [] // USDA found, needs density/units
+	const needsFullAi: { idx: number; name: string }[] = [] // Not in USDA
+
+	for (const idx of missingIndices) {
+		if (usdaResults.has(idx)) {
+			const portions = usdaPortionsMap.get(idx) ?? []
+			const density = densityFromPortions(portions)
+			const nonVolumeUnits = portions.filter(p => !isVolumeUnit(p.name))
+			if (!density || nonVolumeUnits.length === 0) {
+				needsAiEnrichment.push({ idx, name: normalizedNames[idx] })
+			}
+		} else {
+			needsFullAi.push({ idx, name: normalizedNames[idx] })
+		}
+	}
+
+	// 5. Single AI call for all collected ingredients
+	const allAiNeeds = [...needsAiEnrichment, ...needsFullAi]
+	const aiResultsMap = new Map<
+		number,
+		{
+			density: number | null
+			units: Array<{ name: string; grams: number; isDefault: boolean }>
+		} & Partial<{
+			protein: number
+			carbs: number
+			fat: number
+			kcal: number
+			fiber: number
+		}>
+	>()
+
+	if (allAiNeeds.length > 0) {
+		// Only throw when items have no USDA data at all (needsFullAi).
+		// USDA-found items needing enrichment can still be created without AI.
+		const encSecret = ctx.env.ENCRYPTION_SECRET
+		if (needsFullAi.length > 0 && !encSecret) {
+			throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'ENCRYPTION_SECRET not configured' })
+		}
+		const settings = encSecret ? await getDecryptedApiKey(ctx.db, ctx.user.id, encSecret) : null
+		if (needsFullAi.length > 0 && !settings) {
+			throw new TRPCError({
+				code: 'PRECONDITION_FAILED',
+				message: 'No AI provider configured. Go to Settings to add your API key.'
+			})
+		}
+
+		if (settings) {
+			const ingredientList = allAiNeeds.map(n => n.name).join('\n')
+			const { output: aiOutput } = await generateTextWithFallback({
+				provider: settings.provider,
+				apiKey: settings.apiKey,
+				output: Output.object({ schema: batchIngredientAiSchema }),
+				prompt: `${BATCH_INGREDIENT_AI_PROMPT}\n\nIngredients:\n${ingredientList}`,
+				fallback: settings.modelFallback
+			})
+
+			for (let i = 0; i < allAiNeeds.length; i++) {
+				if (aiOutput[i]) {
+					aiResultsMap.set(allAiNeeds[i].idx, aiOutput[i])
+				}
+			}
+		}
+	}
+
+	// 6. Create all missing ingredients in DB
+	for (const idx of missingIndices) {
+		const name = normalizedNames[idx]
+		const usdaData = usdaResults.get(idx)
+		const aiData = aiResultsMap.get(idx)
+
+		let macros: { protein: number; carbs: number; fat: number; kcal: number; fiber: number }
+		let density: number | null = null
+		let fdcId: number | null = null
+		let source: 'usda' | 'ai'
+		let units: PortionUnit[] = []
+
+		if (usdaData) {
+			macros = usdaData.macros
+			fdcId = usdaData.fdcId
+			source = 'usda'
+			const portions = usdaPortionsMap.get(idx) ?? []
+			density = densityFromPortions(portions)
+			units = portionsToUnits(portions)
+
+			if (aiData) {
+				if (!density) density = aiData.density
+				const existingNames = new Set(units.map(u => u.name.toLowerCase()))
+				units = [
+					...units,
+					...aiData.units
+						.filter(
+							u =>
+								!isVolumeUnit(u.name) &&
+								u.name.toLowerCase() !== 'g' &&
+								!existingNames.has(u.name.toLowerCase())
+						)
+						.map(u => ({ ...u, source: 'ai' as const }))
+				]
+			}
+		} else if (aiData) {
+			macros = {
+				protein: aiData.protein ?? 0,
+				carbs: aiData.carbs ?? 0,
+				fat: aiData.fat ?? 0,
+				kcal: aiData.kcal ?? 0,
+				fiber: aiData.fiber ?? 0
+			}
+			density = aiData.density
+			source = 'ai'
+			units = aiData.units.filter(u => !isVolumeUnit(u.name)).map(u => ({ ...u, source: 'ai' as const }))
+		} else {
+			continue
+		}
+
+		const ingredient = await insertIngredientWithUnits(ctx.db, ctx.user.id, {
+			name,
+			macros,
+			sourceId: fdcId != null ? String(fdcId) : null,
+			density,
+			source,
+			units
+		})
+		results[idx] = { ingredient, source }
+	}
+
+	return results.filter(isPresent)
+}
+
 export const ingredientsRouter = router({
 	list: publicProcedure
 		.meta({
@@ -528,225 +759,7 @@ export const ingredientsRouter = router({
 	/** Batch find or create multiple ingredients — single AI call for all unknowns */
 	batchFindOrCreate: protectedProcedure
 		.input(z.object({ names: z.array(z.string().min(1)).max(50) }))
-		.mutation(async ({ ctx, input }) => {
-			const normalizedNames = input.names.map(normalizeIngredientName)
-
-			// 1. DB lookup all (case-insensitive)
-			const existingAll = await ctx.db.query.ingredients.findMany({
-				where: {
-					RAW: t =>
-						inArray(
-							sql`lower(${t.name})`,
-							normalizedNames.map(n => n.toLowerCase())
-						)
-				},
-				with: { units: true }
-			})
-			const existingMap = new Map(existingAll.map(e => [e.name.toLowerCase(), e]))
-
-			type ResultItem = { ingredient: (typeof existingAll)[number]; source: 'existing' | 'usda' | 'ai' }
-			const results: (ResultItem | null)[] = normalizedNames.map(name => {
-				const existing = existingMap.get(name.toLowerCase())
-				return existing ? { ingredient: existing, source: 'existing' } : null
-			})
-
-			// Collect names that need lookup
-			const missingIndices = results.map((r, i) => (r === null ? i : -1)).filter(i => i !== -1)
-			if (missingIndices.length === 0) return results as ResultItem[]
-
-			// 2. Resolve USDA data (local exact match first, then API for remaining)
-			const usdaResults = new Map<
-				number,
-				{ macros: { protein: number; carbs: number; fat: number; kcal: number; fiber: number }; fdcId: number }
-			>()
-			const usdaPortionsMap = new Map<number, Awaited<ReturnType<typeof fetchUsdaPortions>>>()
-
-			// 2a. Local USDA exact match (parallel)
-			const localLookups = await Promise.all(
-				missingIndices.map(async idx => {
-					const result = await lookupLocalUSDA(ctx.db, normalizedNames[idx])
-					return { idx, result }
-				})
-			)
-
-			const localPortionLookups = await Promise.all(
-				localLookups
-					.filter(l => l.result !== null)
-					.map(async ({ idx, result }) => {
-						const { fdcId, description: _, ...macros } = result!
-						usdaResults.set(idx, { macros, fdcId })
-						const portions = await fetchLocalUsdaPortions(ctx.db, fdcId)
-						return { idx, portions }
-					})
-			)
-			for (const { idx, portions } of localPortionLookups) {
-				usdaPortionsMap.set(idx, portions)
-			}
-
-			// 2b. USDA API for items not found locally (parallel)
-			const usdaKey = ctx.env.USDA_API_KEY
-			const needsApiLookup = missingIndices.filter(i => !usdaResults.has(i))
-
-			if (usdaKey && needsApiLookup.length > 0) {
-				const usdaLookups = await Promise.all(
-					needsApiLookup.map(async idx => {
-						const result = await lookupUSDA(normalizedNames[idx], usdaKey)
-						return { idx, result }
-					})
-				)
-				for (const { idx, result } of usdaLookups) {
-					if (result) {
-						const { fdcId, ...macros } = result
-						usdaResults.set(idx, { macros, fdcId })
-					}
-				}
-			}
-
-			// 2c. Fetch USDA API portions for API-found items (parallel)
-			const needsApiPortions = Array.from(usdaResults.entries()).filter(([idx]) => !usdaPortionsMap.has(idx))
-			if (usdaKey && needsApiPortions.length > 0) {
-				const portionLookups = await Promise.all(
-					needsApiPortions.map(async ([idx, { fdcId }]) => {
-						const portions = await fetchUsdaPortions(fdcId, usdaKey)
-						return { idx, portions }
-					})
-				)
-				for (const { idx, portions } of portionLookups) {
-					usdaPortionsMap.set(idx, portions)
-				}
-			}
-
-			// 4. Collect AI needs
-			// - USDA found but needs density/units enrichment
-			// - Not in USDA at all
-			const needsAiEnrichment: { idx: number; name: string }[] = [] // USDA found, needs density/units
-			const needsFullAi: { idx: number; name: string }[] = [] // Not in USDA
-
-			for (const idx of missingIndices) {
-				if (usdaResults.has(idx)) {
-					const portions = usdaPortionsMap.get(idx) ?? []
-					const density = densityFromPortions(portions)
-					const nonVolumeUnits = portions.filter(p => !isVolumeUnit(p.name))
-					if (!density || nonVolumeUnits.length === 0) {
-						needsAiEnrichment.push({ idx, name: normalizedNames[idx] })
-					}
-				} else {
-					needsFullAi.push({ idx, name: normalizedNames[idx] })
-				}
-			}
-
-			// 5. Single AI call for all collected ingredients
-			const allAiNeeds = [...needsAiEnrichment, ...needsFullAi]
-			const aiResultsMap = new Map<
-				number,
-				{
-					density: number | null
-					units: Array<{ name: string; grams: number; isDefault: boolean }>
-				} & Partial<{
-					protein: number
-					carbs: number
-					fat: number
-					kcal: number
-					fiber: number
-				}>
-			>()
-
-			if (allAiNeeds.length > 0) {
-				// Only throw when items have no USDA data at all (needsFullAi).
-				// USDA-found items needing enrichment can still be created without AI.
-				const encSecret = ctx.env.ENCRYPTION_SECRET
-				if (needsFullAi.length > 0 && !encSecret) {
-					throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'ENCRYPTION_SECRET not configured' })
-				}
-				const settings = encSecret ? await getDecryptedApiKey(ctx.db, ctx.user.id, encSecret) : null
-				if (needsFullAi.length > 0 && !settings) {
-					throw new TRPCError({
-						code: 'PRECONDITION_FAILED',
-						message: 'No AI provider configured. Go to Settings to add your API key.'
-					})
-				}
-
-				if (settings) {
-					const ingredientList = allAiNeeds.map(n => n.name).join('\n')
-					const { output: aiOutput } = await generateTextWithFallback({
-						provider: settings.provider,
-						apiKey: settings.apiKey,
-						output: Output.object({ schema: batchIngredientAiSchema }),
-						prompt: `${BATCH_INGREDIENT_AI_PROMPT}\n\nIngredients:\n${ingredientList}`,
-						fallback: settings.modelFallback
-					})
-
-					for (let i = 0; i < allAiNeeds.length; i++) {
-						if (aiOutput[i]) {
-							aiResultsMap.set(allAiNeeds[i].idx, aiOutput[i])
-						}
-					}
-				}
-			}
-
-			// 6. Create all missing ingredients in DB
-			for (const idx of missingIndices) {
-				const name = normalizedNames[idx]
-				const usdaData = usdaResults.get(idx)
-				const aiData = aiResultsMap.get(idx)
-
-				let macros: { protein: number; carbs: number; fat: number; kcal: number; fiber: number }
-				let density: number | null = null
-				let fdcId: number | null = null
-				let source: 'usda' | 'ai'
-				let units: PortionUnit[] = []
-
-				if (usdaData) {
-					macros = usdaData.macros
-					fdcId = usdaData.fdcId
-					source = 'usda'
-					const portions = usdaPortionsMap.get(idx) ?? []
-					density = densityFromPortions(portions)
-					units = portionsToUnits(portions)
-
-					if (aiData) {
-						if (!density) density = aiData.density
-						const existingNames = new Set(units.map(u => u.name.toLowerCase()))
-						units = [
-							...units,
-							...aiData.units
-								.filter(
-									u =>
-										!isVolumeUnit(u.name) &&
-										u.name.toLowerCase() !== 'g' &&
-										!existingNames.has(u.name.toLowerCase())
-								)
-								.map(u => ({ ...u, source: 'ai' as const }))
-						]
-					}
-				} else if (aiData) {
-					macros = {
-						protein: aiData.protein ?? 0,
-						carbs: aiData.carbs ?? 0,
-						fat: aiData.fat ?? 0,
-						kcal: aiData.kcal ?? 0,
-						fiber: aiData.fiber ?? 0
-					}
-					density = aiData.density
-					source = 'ai'
-					units = aiData.units.filter(u => !isVolumeUnit(u.name)).map(u => ({ ...u, source: 'ai' as const }))
-				} else {
-					continue
-				}
-
-				const ingredient = await insertIngredientWithUnits(ctx.db, ctx.user.id, {
-					name,
-					macros,
-					sourceId: fdcId != null ? String(fdcId) : null,
-					density,
-					source,
-					units
-				})
-				results[idx] = { ingredient, source }
-			}
-
-			return results.filter(isPresent)
-		}),
+		.mutation(async ({ ctx, input }) => batchFindOrCreateIngredients(ctx, input.names)),
 
 	// Unit CRUD operations
 	listUnits: protectedProcedure.input(zodTypeID('ing')).query(async ({ ctx, input }) => {

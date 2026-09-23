@@ -15,14 +15,17 @@ import {
 	stripHtml
 } from '../ai-utils'
 import {
+	buildGenerateRecipePrompt,
 	cookedWeightSchema,
 	GENERATE_INSTRUCTIONS_PROMPT,
 	generatedInstructionsSchema,
+	generatedRecipeSchema,
 	ingredientAiSchema,
 	PREMADE_AI_PROMPT,
 	parsedProductSchema,
 	parsedRecipeSchema,
-	RECIPE_AI_PROMPT
+	RECIPE_AI_PROMPT,
+	zLanguageCode
 } from '../constants'
 import { protectedProcedure, router } from '../trpc'
 import { normalizeIngredientName } from '../utils'
@@ -253,6 +256,54 @@ export const aiRouter = router({
 				}),
 				source: 'ai' as const
 			}
+		}),
+
+	generateRecipe: protectedProcedure
+		.meta({
+			description:
+				'Invent a brand-new recipe from scratch with AI — name, ingredients, instructions, servings, and prep time. Returns a preview only (mirrors parseRecipe): nothing is persisted until the client imports it via ingredient.findOrCreate/batchFindOrCreate + recipe.create + recipe.addIngredient. `language` picks the output language for name/instructions/ingredient displayName; ingredient `name` (used for DB lookup) always stays in English. `targetKcal`/`targetProtein` steer the recipe toward a calorie/protein band per serving without pretending the estimate is exact — actual macros come from the resolved ingredients once imported.'
+		})
+		.input(
+			z.object({
+				language: zLanguageCode,
+				mealLabel: z
+					.string()
+					.min(1)
+					.describe('What kind of meal to invent, e.g. "breakfast", "high-protein lunch"'),
+				targetKcal: z.number().positive().nullable().optional(),
+				targetProtein: z.number().positive().nullable().optional(),
+				excludeNames: z.array(z.string()).optional().describe('Recipe names to avoid repeating')
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			const encryptionSecret = ctx.env.ENCRYPTION_SECRET
+			if (!encryptionSecret) {
+				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'ENCRYPTION_SECRET not configured' })
+			}
+
+			const settings = await getDecryptedApiKey(ctx.db, ctx.user.id, encryptionSecret)
+			if (!settings) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: 'No AI provider configured. Go to Settings to add your API key.'
+				})
+			}
+
+			const { output } = await generateTextWithFallback({
+				provider: settings.provider,
+				apiKey: settings.apiKey,
+				output: Output.object({ schema: generatedRecipeSchema }),
+				prompt: buildGenerateRecipePrompt({
+					language: input.language,
+					mealLabel: input.mealLabel,
+					targetKcal: input.targetKcal ?? null,
+					targetProtein: input.targetProtein ?? null,
+					excludeNames: input.excludeNames
+				}),
+				fallback: settings.modelFallback
+			})
+
+			return output
 		}),
 
 	parseProduct: protectedProcedure.input(z.object({ url: z.string().url() })).mutation(async ({ ctx, input }) => {

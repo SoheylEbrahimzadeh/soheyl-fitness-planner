@@ -475,5 +475,52 @@ export const fr: Dictionary = {
 			ctaBackToTop: 'Retour en haut',
 			tagline: 'Conçu pour les athlètes qui mesurent'
 		}
+	},
+	shoppingList: {
+		subtitle: 'Généré automatiquement à partir du plan de repas de chaque semaine.',
+		emptyWeeks: 'Pas encore de plan de repas hebdomadaire.',
+		goToPlans: 'Aller à mes plans de repas',
+		emptyIngredients: 'Ce plan de repas ne contient aucun ingrédient.',
+		copy: 'Copier',
+		copied: 'Copié',
+		progress: '{{checked}} sur {{total}} cochés',
+		backToList: 'Toutes les listes de courses',
+		recipeCount: '{{count}} recettes dans l’inventaire',
+		haveItSection: '{{count}} déjà en stock',
+		needToBuySection: '{{count}} à acheter'
+	},
+	mealPlanGenerator: {
+		button: 'Générer le plan hebdomadaire',
+		dialogTitle: 'Générer le plan hebdomadaire',
+		dialogDescription:
+			"Remplit chaque créneau vide de la semaine selon tes objectifs nutritionnels — réutilise les recettes existantes qui conviennent et en crée de nouvelles avec l'IA pour le reste.",
+		confirm: 'Générer',
+		cancel: 'Annuler',
+		generating: 'Génération du plan de la semaine…',
+		resultSummary: '{{filled}} repas ajoutés — {{reused}} réutilisés, {{created}} nouvellement générés',
+		noOpenSlots: 'Tous les créneaux de cette semaine sont déjà remplis.',
+		close: 'Fermer'
+	},
+	recipeGenerator: {
+		button: 'Générer une recette',
+		dialogTitle: "Générer une recette avec l'IA",
+		mealLabel: 'Quel type de repas ?',
+		mealLabelPlaceholder: 'ex. petit-déjeuner riche en protéines',
+		mealLabelRequired: 'Décris d’abord le repas',
+		targetKcal: 'Calories cibles',
+		targetProtein: 'Protéines cibles (g)',
+		optional: 'facultatif',
+		generate: 'Générer',
+		generating: 'Génération…',
+		cancel: 'Annuler',
+		back: 'Retour',
+		previewTitle: 'Aperçu',
+		ingredients: 'Ingrédients',
+		instructions: 'Instructions',
+		servings: 'Portions',
+		prepTime: '{{min}} min',
+		addToPlan: 'Ajouter au plan',
+		importing: 'Ajout des ingrédients… ({{current}}/{{total}})',
+		close: 'Fermer'
 	}
 }

@@ -33,6 +33,7 @@ describe('MCP mutations', () => {
 		const mutations = tools.filter(t => procedures[t.procedurePath]?._def?.type === 'mutation')
 		expect(mutations.map(t => t.name).sort()).toMatchInlineSnapshot(`
 			[
+			  "ai_generateRecipe",
 			  "ai_lookup",
 			  "ai_parseRecipe",
 			  "ingredient_addFromLabel",
@@ -45,9 +46,11 @@ describe('MCP mutations', () => {
 			  "mealPlan_delete",
 			  "mealPlan_duplicate",
 			  "mealPlan_ensureWeek",
+			  "mealPlan_generateWeek",
 			  "mealPlan_logMeal",
 			  "mealPlan_removeFromInventory",
 			  "mealPlan_removeSlot",
+			  "mealPlan_toggleGroceryCheck",
 			  "mealPlan_update",
 			  "mealPlan_updateSlot",
 			  "recipe_addIngredient",

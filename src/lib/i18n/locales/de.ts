@@ -470,5 +470,52 @@ export const de: Dictionary = {
 			ctaBackToTop: 'Nach oben',
 			tagline: 'Gemacht für alle, die messen'
 		}
+	},
+	shoppingList: {
+		subtitle: 'Wird automatisch aus dem Essensplan jeder Woche erstellt.',
+		emptyWeeks: 'Noch keine wöchentlichen Essenspläne.',
+		goToPlans: 'Zu meinen Essensplänen',
+		emptyIngredients: 'Dieser Essensplan enthält keine Zutaten.',
+		copy: 'Kopieren',
+		copied: 'Kopiert',
+		progress: '{{checked}} von {{total}} abgehakt',
+		backToList: 'Alle Einkaufslisten',
+		recipeCount: '{{count}} Rezepte im Bestand',
+		haveItSection: '{{count}} bereits vorhanden',
+		needToBuySection: '{{count}} zu kaufen'
+	},
+	mealPlanGenerator: {
+		button: 'Wochenplan erstellen',
+		dialogTitle: 'Wochenplan erstellen',
+		dialogDescription:
+			'Füllt jeden leeren Slot dieser Woche anhand deiner Ernährungsziele — nutzt passende vorhandene Rezepte wieder und erstellt für den Rest neue KI-Rezepte.',
+		confirm: 'Erstellen',
+		cancel: 'Abbrechen',
+		generating: 'Wochenplan wird erstellt …',
+		resultSummary: '{{filled}} Mahlzeiten hinzugefügt — {{reused}} wiederverwendet, {{created}} neu erstellt',
+		noOpenSlots: 'Alle Plätze dieser Woche sind bereits belegt.',
+		close: 'Schließen'
+	},
+	recipeGenerator: {
+		button: 'Rezept generieren',
+		dialogTitle: 'Rezept mit KI generieren',
+		mealLabel: 'Welche Art von Mahlzeit?',
+		mealLabelPlaceholder: 'z. B. proteinreiches Frühstück',
+		mealLabelRequired: 'Beschreibe zuerst die Mahlzeit',
+		targetKcal: 'Ziel-Kalorien',
+		targetProtein: 'Ziel-Protein (g)',
+		optional: 'optional',
+		generate: 'Generieren',
+		generating: 'Wird generiert …',
+		cancel: 'Abbrechen',
+		back: 'Zurück',
+		previewTitle: 'Vorschau',
+		ingredients: 'Zutaten',
+		instructions: 'Zubereitung',
+		servings: 'Portionen',
+		prepTime: '{{min}} Min.',
+		addToPlan: 'Zum Plan hinzufügen',
+		importing: 'Zutaten werden hinzugefügt … ({{current}}/{{total}})',
+		close: 'Schließen'
 	}
 }

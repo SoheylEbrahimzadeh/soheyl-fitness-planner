@@ -468,5 +468,52 @@ export const en: Dictionary = {
 			ctaBackToTop: 'Back to top',
 			tagline: 'Built for lifters who measure'
 		}
+	},
+	shoppingList: {
+		subtitle: "Auto-generated from each week's meal plan.",
+		emptyWeeks: 'No weekly meal plans yet.',
+		goToPlans: 'Go to my meal plans',
+		emptyIngredients: 'No ingredients in this meal plan.',
+		copy: 'Copy',
+		copied: 'Copied',
+		progress: '{{checked}} of {{total}} checked',
+		backToList: 'All shopping lists',
+		recipeCount: '{{count}} recipes in inventory',
+		haveItSection: '{{count}} you already have',
+		needToBuySection: '{{count}} to buy'
+	},
+	mealPlanGenerator: {
+		button: 'Generate Weekly Plan',
+		dialogTitle: 'Generate Weekly Plan',
+		dialogDescription:
+			'Fill every empty meal slot this week from your nutrition targets — reusing recipes that already fit, and creating new AI recipes for the rest.',
+		confirm: 'Generate',
+		cancel: 'Cancel',
+		generating: 'Generating your week…',
+		resultSummary: '{{filled}} meals added — {{reused}} reused, {{created}} newly generated',
+		noOpenSlots: 'Every slot this week is already filled.',
+		close: 'Close'
+	},
+	recipeGenerator: {
+		button: 'Generate Recipe',
+		dialogTitle: 'Generate a Recipe with AI',
+		mealLabel: 'What kind of meal?',
+		mealLabelPlaceholder: 'e.g. high-protein breakfast',
+		mealLabelRequired: 'Describe the meal first',
+		targetKcal: 'Target calories',
+		targetProtein: 'Target protein (g)',
+		optional: 'optional',
+		generate: 'Generate',
+		generating: 'Generating…',
+		cancel: 'Cancel',
+		back: 'Back',
+		previewTitle: 'Preview',
+		ingredients: 'Ingredients',
+		instructions: 'Instructions',
+		servings: 'Servings',
+		prepTime: '{{min}} min',
+		addToPlan: 'Add to Plan',
+		importing: 'Adding ingredients… ({{current}}/{{total}})',
+		close: 'Close'
 	}
 }

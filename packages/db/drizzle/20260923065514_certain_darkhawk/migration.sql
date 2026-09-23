@@ -1,0 +1,1 @@
+ALTER TABLE `recipes` ADD `prep_time_minutes` integer;

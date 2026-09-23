@@ -342,4 +342,59 @@ export interface Dictionary {
 			tagline: string
 		}
 	}
+	shoppingList: {
+		subtitle: string
+		emptyWeeks: string
+		goToPlans: string
+		emptyIngredients: string
+		copy: string
+		copied: string
+		/** {{checked}}, {{total}} */
+		progress: string
+		backToList: string
+		/** {{count}} */
+		recipeCount: string
+		/** {{count}} */
+		haveItSection: string
+		/** {{count}} */
+		needToBuySection: string
+	}
+	/** "Generate Weekly Plan" — auto-fills every empty meal slot for the week (new in Phase 2). */
+	mealPlanGenerator: {
+		button: string
+		dialogTitle: string
+		dialogDescription: string
+		confirm: string
+		cancel: string
+		generating: string
+		/** {{filled}}, {{reused}}, {{created}} */
+		resultSummary: string
+		noOpenSlots: string
+		close: string
+	}
+	/** AI single-recipe generation + preview (new in Phase 2). */
+	recipeGenerator: {
+		button: string
+		dialogTitle: string
+		mealLabel: string
+		mealLabelPlaceholder: string
+		mealLabelRequired: string
+		targetKcal: string
+		targetProtein: string
+		optional: string
+		generate: string
+		generating: string
+		cancel: string
+		back: string
+		previewTitle: string
+		ingredients: string
+		instructions: string
+		servings: string
+		/** {{min}} */
+		prepTime: string
+		addToPlan: string
+		/** {{current}}, {{total}} */
+		importing: string
+		close: string
+	}
 }

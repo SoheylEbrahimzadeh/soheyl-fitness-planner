@@ -127,6 +127,112 @@ Example format:
 2. Add onion and cook for 5 minutes.
 3. Stir in garlic and cook for 1 minute.`
 
+// --- AI recipe generation (new recipe from scratch, not parsed from existing text) ---
+
+/**
+ * Supported UI languages (mirrors `LanguageCode` in `src/lib/i18n/types.ts`). Kept as a separate,
+ * backend-local literal rather than importing from `src/` — workers/ cannot import frontend code,
+ * same reason `@macromaxxing/db/macros` was pulled out for `recipe.search` to use server-side.
+ */
+export const zLanguageCode = z.enum(['en', 'fa', 'de', 'fr'])
+export type LanguageCode = z.infer<typeof zLanguageCode>
+
+export const LANGUAGE_NAMES: Record<LanguageCode, string> = {
+	en: 'English',
+	fa: 'Persian (Farsi)',
+	de: 'German',
+	fr: 'French'
+}
+
+const generatedRecipeIngredientSchema = z.object({
+	name: z
+		.string()
+		.describe(
+			'Ingredient name in ENGLISH ONLY, without preparation descriptors, e.g. "chicken breast", "garlic cloves". Used to look up or create the ingredient in the nutrition database — must stay in English regardless of the requested output language so it matches the existing English-only ingredient library and USDA data.'
+		),
+	displayName: z
+		.string()
+		.describe(
+			'The same ingredient, as it should be shown to the user, translated into the requested output language. May equal `name` for English output.'
+		),
+	amount: z.number().describe('Numeric amount'),
+	unit: z
+		.string()
+		.describe('Unit: "g", "tbsp", "cup", "pcs", "large", "medium", "small", "ml", "dl", "tsp", "scoop", etc.'),
+	preparation: z
+		.string()
+		.nullable()
+		.describe('Preparation method stripped from the name, e.g. "minced", "diced". null if none.')
+})
+
+export const generatedRecipeSchema = z.object({
+	name: z.string().describe('Recipe name/title, in the requested output language'),
+	ingredients: z.array(generatedRecipeIngredientSchema).describe('List of ingredients with amounts'),
+	instructions: z
+		.string()
+		.describe('Cooking instructions as a markdown numbered list, in the requested output language'),
+	servings: z.number().positive().describe('Number of servings/portions this recipe makes'),
+	prepTimeMinutes: z.number().positive().nullable().describe('Total prep + cook time in minutes, null if unsure')
+})
+
+export type GeneratedRecipe = z.infer<typeof generatedRecipeSchema>
+
+export const batchGeneratedRecipeSchema = z.array(generatedRecipeSchema)
+
+/**
+ * `targetKcal`/`targetProtein` steer the recipe toward a calorie/protein band without pretending
+ * AI nutrition estimates are exact — the actual macros are still priced from the resolved
+ * ingredients afterward (see `recipe-builder.ts`), same as every other recipe in this app.
+ */
+export function buildGenerateRecipePrompt(params: {
+	language: LanguageCode
+	mealLabel: string
+	targetKcal: number | null
+	targetProtein: number | null
+	excludeNames?: string[]
+}): string {
+	const languageName = LANGUAGE_NAMES[params.language]
+	const targetLine =
+		params.targetKcal != null
+			? `Target roughly ${Math.round(params.targetKcal)} kcal${params.targetProtein != null ? ` and ${Math.round(params.targetProtein)}g protein` : ''} per serving.`
+			: ''
+	const excludeLine = params.excludeNames?.length
+		? `Avoid repeating these recipes already used this week: ${params.excludeNames.join(', ')}.`
+		: ''
+
+	return `Invent a complete, realistic ${params.mealLabel} recipe.
+${targetLine}
+${excludeLine}
+Write the recipe name, instructions, and each ingredient's displayName in ${languageName}.
+Each ingredient's "name" field (used for database lookup) MUST stay in English regardless of the output language.
+Extract numeric amounts and units (use metric where possible: g, ml, dl, tbsp, tsp, cup, pcs, large, medium, small).
+Separate the base ingredient name from any preparation method (e.g. "onion, finely chopped" -> name: "onion", preparation: "finely chopped").
+Give practical, numbered cooking instructions.`
+}
+
+export function buildBatchGenerateRecipePrompt(
+	items: Array<{ mealLabel: string; targetKcal: number | null; targetProtein: number | null }>,
+	language: LanguageCode
+): string {
+	const languageName = LANGUAGE_NAMES[language]
+	const list = items
+		.map(
+			(it, i) =>
+				`${i + 1}. ${it.mealLabel}${it.targetKcal != null ? ` — roughly ${Math.round(it.targetKcal)} kcal${it.targetProtein != null ? `, ${Math.round(it.targetProtein)}g protein` : ''} per serving` : ''}`
+		)
+		.join('\n')
+
+	return `Invent ${items.length} complete, realistic, DISTINCT recipes, one per line below, in the SAME ORDER as listed.
+${list}
+
+Write each recipe's name, instructions, and each ingredient's displayName in ${languageName}.
+Each ingredient's "name" field (used for database lookup) MUST stay in English regardless of the output language.
+Extract numeric amounts and units (use metric where possible: g, ml, dl, tbsp, tsp, cup, pcs, large, medium, small).
+Separate the base ingredient name from any preparation method (e.g. "onion, finely chopped" -> name: "onion", preparation: "finely chopped").
+Give practical, numbered cooking instructions for each recipe.
+Vary the recipes from each other — do not repeat the same dish for different meals.`
+}
+
 export const PREMADE_AI_PROMPT = `
 Extract product nutrition information from this page.
 Return the product name, serving size (total product weight in grams), servings per container, and macros per serving (protein, carbs, fat, kcal, fiber in grams).

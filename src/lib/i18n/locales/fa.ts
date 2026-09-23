@@ -467,5 +467,52 @@ export const fa: Dictionary = {
 			ctaBackToTop: 'بازگشت به بالا',
 			tagline: 'برای ورزشکارانی که اندازه می‌گیرند'
 		}
+	},
+	shoppingList: {
+		subtitle: 'به‌صورت خودکار از برنامه غذایی هر هفته ساخته می‌شود.',
+		emptyWeeks: 'هنوز برنامه غذایی هفتگی‌ای وجود ندارد.',
+		goToPlans: 'رفتن به برنامه‌های غذایی من',
+		emptyIngredients: 'این برنامه غذایی هیچ ماده‌ای ندارد.',
+		copy: 'کپی',
+		copied: 'کپی شد',
+		progress: '{{checked}} از {{total}} تیک خورده',
+		backToList: 'همه‌ی لیست‌های خرید',
+		recipeCount: '{{count}} رسپی در انبار',
+		haveItSection: '{{count}} مورد را داری',
+		needToBuySection: '{{count}} مورد باید بخری'
+	},
+	mealPlanGenerator: {
+		button: 'ساخت برنامه هفتگی',
+		dialogTitle: 'ساخت برنامه غذایی هفتگی',
+		dialogDescription:
+			'همه‌ی وعده‌های خالی این هفته را بر اساس اهداف تغذیه‌ای‌ات پر می‌کند — رسپی‌های مناسب موجود را دوباره استفاده می‌کند و برای بقیه رسپی جدید با هوش مصنوعی می‌سازد.',
+		confirm: 'ساخت',
+		cancel: 'انصراف',
+		generating: 'در حال ساخت برنامه هفتگی…',
+		resultSummary: '{{filled}} وعده اضافه شد — {{reused}} تا از رسپی‌های موجود، {{created}} تا رسپی جدید',
+		noOpenSlots: 'همه‌ی وعده‌های این هفته پر است.',
+		close: 'بستن'
+	},
+	recipeGenerator: {
+		button: 'ساخت رسپی با AI',
+		dialogTitle: 'ساخت رسپی با هوش مصنوعی',
+		mealLabel: 'چه نوع وعده‌ای؟',
+		mealLabelPlaceholder: 'مثلاً صبحانه پرپروتئین',
+		mealLabelRequired: 'اول نوع وعده را بنویس',
+		targetKcal: 'کالری هدف',
+		targetProtein: 'پروتئین هدف (گرم)',
+		optional: 'اختیاری',
+		generate: 'ساخت',
+		generating: 'در حال ساخت…',
+		cancel: 'انصراف',
+		back: 'بازگشت',
+		previewTitle: 'پیش‌نمایش',
+		ingredients: 'مواد لازم',
+		instructions: 'دستور پخت',
+		servings: 'تعداد سِرو',
+		prepTime: '{{min}} دقیقه',
+		addToPlan: 'افزودن به برنامه',
+		importing: 'در حال افزودن مواد لازم… ({{current}}/{{total}})',
+		close: 'بستن'
 	}
 }

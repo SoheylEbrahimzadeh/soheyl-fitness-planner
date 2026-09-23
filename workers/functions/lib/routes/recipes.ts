@@ -47,7 +47,8 @@ const recipeIngredientsWithOrdered = {
 const insertRecipeSchema = z.object({
 	name: z.string().min(1),
 	instructions: z.string().optional(),
-	sourceUrl: z.string().url().nullable().optional()
+	sourceUrl: z.string().url().nullable().optional(),
+	prepTimeMinutes: z.number().int().positive().nullable().optional()
 })
 
 const updateRecipeSchema = z.object({
@@ -62,6 +63,7 @@ const updateRecipeSchema = z.object({
 		.optional()
 		.describe('Grams of rendered fat discarded during cooking (left in the pan) — subtracted from fat and kcal'),
 	portionSize: z.number().positive().nullable().optional(),
+	prepTimeMinutes: z.number().int().positive().nullable().optional(),
 	isPublic: z.boolean().optional(),
 	image: zImageSource.nullable().optional()
 })
@@ -191,6 +193,7 @@ export const recipesRouter = router({
 					name: input.name,
 					instructions: input.instructions,
 					sourceUrl: input.sourceUrl ?? null,
+					prepTimeMinutes: input.prepTimeMinutes ?? null,
 					createdAt: now,
 					updatedAt: now
 				})

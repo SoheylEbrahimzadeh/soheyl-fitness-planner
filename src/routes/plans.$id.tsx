@@ -1,14 +1,15 @@
 import type { MealPlan, MealPlanInventory, MealPlanSlot } from '@macromaxxing/db'
-import { ArrowLeft, Copy, ShoppingCart, Trash2 } from 'lucide-react'
+import { ArrowLeft, Copy, ShoppingCart, Sparkles, Trash2, Wand2 } from 'lucide-react'
 import { type FC, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { Button, CopyButton, Input, Spinner, TRPCError } from '~/components/ui'
-import { GroceryListDialog } from '~/features/mealPlans/components/GroceryListDialog'
+import { GenerateWeekDialog } from '~/features/mealPlans/components/GenerateWeekDialog'
 import { InventorySidebar } from '~/features/mealPlans/components/InventorySidebar'
 import { WeekGrid } from '~/features/mealPlans/components/WeekGrid'
 import { WeeklyAverages } from '~/features/mealPlans/components/WeeklyAverages'
 import { formatMealPlan } from '~/features/mealPlans/utils/export'
-import { mealPlanLabel, prefetchRoute, useDocumentTitle } from '~/lib'
+import { GeneratedRecipePreview } from '~/features/recipes/components/GeneratedRecipePreview'
+import { mealPlanLabel, prefetchRoute, useDocumentTitle, useTranslation } from '~/lib'
 import { trpc } from '~/lib/trpc'
 import type { Route } from './+types/plans.$id'
 
@@ -21,9 +22,11 @@ export const clientLoader = ({ params }: Route.ClientLoaderArgs) =>
 const MealPlannerPage: FC = () => {
 	const { id } = useParams<{ id: MealPlan['id'] }>()
 	const navigate = useNavigate()
+	const { t, dict } = useTranslation()
 	const [name, setName] = useState('')
 	const [hasLoadedPlan, setHasLoadedPlan] = useState(false)
-	const [showGroceryList, setShowGroceryList] = useState(false)
+	const [showGenerateWeek, setShowGenerateWeek] = useState(false)
+	const [showGenerateRecipe, setShowGenerateRecipe] = useState(false)
 
 	const planQuery = trpc.mealPlan.get.useQuery({ id: id! }, { enabled: !!id })
 	// What an unnamed plan is called — also the placeholder, so clearing the field shows what it falls back to.
@@ -121,10 +124,20 @@ const MealPlannerPage: FC = () => {
 					className="border-none bg-transparent p-0 font-semibold text-ink text-lg placeholder:text-ink-faint focus-visible:ring-0"
 				/>
 				<div className="ml-auto flex items-center gap-1">
-					<Button variant="ghost" size="sm" onClick={() => setShowGroceryList(true)}>
-						<ShoppingCart className="size-4" />
-						<span className="hidden sm:inline">Groceries</span>
+					<Button variant="ghost" size="sm" onClick={() => setShowGenerateWeek(true)}>
+						<Wand2 className="size-4" />
+						<span className="hidden sm:inline">{t('mealPlanGenerator.button')}</span>
 					</Button>
+					<Button variant="ghost" size="sm" onClick={() => setShowGenerateRecipe(true)}>
+						<Sparkles className="size-4" />
+						<span className="hidden sm:inline">{t('recipeGenerator.button')}</span>
+					</Button>
+					<Link to={`/shopping-list/${id}`}>
+						<Button variant="ghost" size="sm">
+							<ShoppingCart className="size-4" />
+							<span className="hidden sm:inline">{dict.nav.shoppingList}</span>
+						</Button>
+					</Link>
 					<CopyButton getText={() => formatMealPlan(planQuery.data!)} />
 					<Button variant="ghost" size="sm" onClick={handleDuplicate} disabled={duplicateMutation.isPending}>
 						<Copy className="size-4" />
@@ -166,7 +179,8 @@ const MealPlannerPage: FC = () => {
 				<InventorySidebar planId={id!} inventory={planQuery.data.inventory} />
 			</div>
 
-			{showGroceryList && <GroceryListDialog plan={planQuery.data} onClose={() => setShowGroceryList(false)} />}
+			{showGenerateWeek && <GenerateWeekDialog planId={id!} onClose={() => setShowGenerateWeek(false)} />}
+			{showGenerateRecipe && <GeneratedRecipePreview planId={id!} onClose={() => setShowGenerateRecipe(false)} />}
 		</div>
 	)
 }

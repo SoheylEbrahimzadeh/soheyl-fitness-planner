@@ -158,6 +158,8 @@ export const recipes = sqliteTable(
 		cookedWeight: real('cooked_weight'), // nullable, null = use raw total
 		discardedFat: real('discarded_fat'), // grams of rendered fat left in the pan, subtracted from totals (null = none)
 		portionSize: real('portion_size'), // null = entire dish is 1 portion
+		/** Minutes to make it (prep + cook), end to end. Null when unknown — manual entries mostly won't have it. */
+		prepTimeMinutes: integer('prep_time_minutes'),
 		isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
 		sourceUrl: text('source_url'), // URL the recipe was imported from (null = manual/text)
 		image: text('image').$type<ImageSource>(),
@@ -257,6 +259,29 @@ export const mealPlanSlots = sqliteTable(
 		createdAt: integer('created_at').notNull()
 	},
 	t => [index('meal_plan_slots_inventory_id_idx').on(t.inventoryId)]
+)
+
+// Per-ingredient "picked it up" state for a plan's auto-generated shopping list.
+// Keyed by (mealPlanId, ingredientId) — the grocery list itself is derived on the fly from
+// inventory/slots (see generateGroceryList), this table only remembers what's been checked off.
+export const mealPlanGroceryChecks = sqliteTable(
+	'meal_plan_grocery_checks',
+	{
+		id: typeidCol('mgc')('id')
+			.primaryKey()
+			.$defaultFn(() => newId('mgc')),
+		mealPlanId: typeidCol('mpl')('meal_plan_id')
+			.notNull()
+			.references(() => mealPlans.id, { onDelete: 'cascade' }),
+		ingredientId: typeidCol('ing')('ingredient_id')
+			.notNull()
+			.references(() => ingredients.id, { onDelete: 'cascade' }),
+		checkedAt: integer('checked_at').notNull()
+	},
+	t => [
+		index('meal_plan_grocery_checks_plan_id_idx').on(t.mealPlanId),
+		uniqueIndex('meal_plan_grocery_checks_unique_idx').on(t.mealPlanId, t.ingredientId)
+	]
 )
 
 // ─── Workout Tracking ────────────────────────────────────────────────

@@ -55,6 +55,7 @@ export function ingredientAsTarget(ingredient: LoadedIngredient): InventoryTarge
 		cookedWeight: null,
 		discardedFat: null,
 		portionSize: INGREDIENT_PORTION_GRAMS,
+		prepTimeMinutes: null,
 		isPublic: false,
 		sourceUrl: ingredient.sourceUrl,
 		image: null,
